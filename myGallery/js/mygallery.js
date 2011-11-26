@@ -28,6 +28,9 @@ var GSys = {
 				this.stage[i] = args[i];
 				//TODO it may not safety
 			}
+			if (this.stage.cont === null) {
+				return false;
+			}
 			return true;
 		},
 		/**
@@ -48,6 +51,14 @@ GSys.stage = {
 		 */
 		width : defs.SWIDTH,
 		height : defs.SHEIGHT,
+		/**
+		 * The list of images
+		 */
+		imgs : [],
+		/**
+		 * The container of the stage
+		 */
+		cont : null,
 		/**
 		 * Starts display Image
 		 */
