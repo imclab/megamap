@@ -56,7 +56,7 @@ GSys.stage = {
 		/**
 		 * The list of images
 		 */
-		imgs : [],
+		imgs : null,
 		/**
 		 * The container's name of the stage
 		 */
@@ -88,7 +88,7 @@ GSys.stage = {
 			
 			this.contObj = document.getElementById(this.cont);
 			
-			if (contObj === undefined) {
+			if (this.contObj === undefined) {
 				return false;
 			}
 			
@@ -103,14 +103,22 @@ GSys.stage = {
 			this.renderer = new THREE.CanvasRenderer();
 			this.renderer.setSize(this.width, this.height);
 
+			this.renderer.setClearColorHex(0xff0000, .8);
+			this.contObj.appendChild(this.renderer.domElement);
 			
-			contObj.appendChild(this.renderer.domElement);
-			
+			this.renderer.render(this.scn, this.camera);
 		},
 		/**
 		 * Starts the scene logic
 		 */
 		start : function () {
+			
+		},
+		/**
+		 * Appends the image
+		 * @param uri the uri of the image
+		 */
+		appendImg : function (uri) {
 			
 		}
 };
@@ -120,7 +128,9 @@ GSys.stage = {
  * The Image list class used in the gallery.
  */
 var MyImgList = function() {
-	
+	this.length = 0;
+	/* the list of images */
+	this.imgs = [];
 };
 MyImgList.prototype = {
 	
