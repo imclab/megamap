@@ -56,7 +56,7 @@ GSys.stage = {
 		/**
 		 * The list of images
 		 */
-		imgs : null,
+		imgList : new MyImgList(),
 		/**
 		 * The container's name of the stage
 		 */
@@ -119,7 +119,7 @@ GSys.stage = {
 		 * @param uri the uri of the image
 		 */
 		appendImg : function (uri) {
-			
+			this.imgList.append(uri);
 		}
 };
 
@@ -133,14 +133,31 @@ var MyImgList = function() {
 	this.imgs = [];
 };
 MyImgList.prototype = {
-	
+	/**
+	 * Appends a new uri
+	 * @param uri the uri of image
+	 */
+	append : function (uri) {
+		this.imgs.append(new MyImg({'uri':uri}));
+	},
+	/**
+	 * To clear all imgs in the list
+	 */
+	clear : function () {
+		
+	}
 };
 
 /**
+ * @constructor
  * The Image class of my gallery.
+ * @param args the current arguments
+ * 		  currently supported
  */
-var MyImg = function (){
-		
+var MyImg = function (args) {
+	for (var i in args) {
+		this[i] = args[i];
+	}
 };
 MyImg.prototype = {
 		
