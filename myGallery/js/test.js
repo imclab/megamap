@@ -5,6 +5,6 @@
 
 (function(window) {
 	window.addEventListener('load', function(){
-		alert('fuck');
+		GSys.init({cont:'cav', width: 600});
 	}, false);
 })(window);
