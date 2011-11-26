@@ -179,6 +179,9 @@ var MyImg = function (args) {
 	for (var i in args) {
 		this[i] = args[i];
 	}
+	this.idx = 0;
+	this.x = 0;
+	
 	/**
 	 * Creates the mesh
 	 */
