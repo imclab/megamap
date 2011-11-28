@@ -6,7 +6,11 @@
 (function(window) {
 	window.addEventListener('load', function(){
 		GSys.init(['haha', 'aaa','bbb'],
-			{cont:'cav', width: 600});
+			{cont:'cav', width: 900, height: 540});
 		GSys.start();
+		document.getElementById('next')
+		.addEventListener('click', function() {
+			GSys.next();
+		}, false);
 	}, false);
 })(window);

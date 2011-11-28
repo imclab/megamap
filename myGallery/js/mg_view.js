@@ -47,7 +47,31 @@ var MainView = {
 	cam : null,
 
 	/**
-	 * Initailize the view, and add the 
+	 * Defines whether or not in a tween motion
+	 */
+	inTween : false,
+
+	/**
+	 * The offset of percentage every tween frame moves
+	 */
+	twOffset : 2.0,
+
+	/**
+	 * The offset value accumlated in total.
+	 */
+	accOffset : 0,
+
+	/**
+	 * Switches to next pics
+	 */
+	next : function () {
+		if (this.inTween) return;
+		this.inTween = true;
+		this.twOffset = -Math.abs(this.twOffset);
+	},
+
+	/**
+	 * Initailizes the view, and add the 
 	 * first of serveral objects in the stage
 	 * mesh object to the stage
 	 */
@@ -71,7 +95,26 @@ var MainView = {
 	},
 
 	run : function () {
-		for (var i=0; i<this.imgList.length; i++) {
+		if (!this.inTween) return;
+		this.accOffset += this.twOffset;
+		var i=GSys.curImg-1;
+		/* TODO I should optmize here */
+		if (this.accOffset >= 100.0) {
+			this.accOffset = 0;
+			this.inTween = false;
+			return;
+		} else  if (this.accOffset <= -100.0) {
+			this.accOffset = 0;
+			this.inTween = false;
+			return;
+		}
+		if (i<0) i=0; /* sanity check */
+		for (var j=0; i<this.imgList.length
+			&& j<this.dispAmount; i++,j++) {
+			this.imgList[i].mesh.position = 
+				{x:(j+this.accOffset/100.0)*MvDec.xOffset,
+				y:(j+this.accOffset/100.0)*MvDec.yOffset, 
+				z:-(j+this.accOffset/100.0)*MvDec.zOffset};
 		}
 	}
 };

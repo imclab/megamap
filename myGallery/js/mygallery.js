@@ -21,6 +21,10 @@ var GSys = {
 		 */
 		imgList : [],
 		/**
+		 * Current displayed image pointer
+		 */
+		curImg : 0,
+		/**
 		 * Initializes the gallery system with given parameter
 		 * @param urls imgs url given
 		 * @param sargs the argument given in JSON for stage
@@ -47,6 +51,13 @@ var GSys = {
 		},
 
 		next : function () {
+			/* TODO current no loop */
+			this.curImg += 1;
+			if (this.curImg >= this.imgList.length)
+				return;
+			for (var i=0; i<this.stage.views.length; i++) {
+				this.stage.views[i].next();
+			}
 		},
 
 		prev : function () {
@@ -147,7 +158,7 @@ GSys.stage = {
 		 * TODO possibly I should refactor this function
 		 */
 		render : function () {
-			//requestAnimationFrame(GSys.stage.render);
+			requestAnimationFrame(GSys.stage.render);
 
 			for (var i=0; i<GSys.stage.views.length; i++) {
 				GSys.stage.views[i].run();
