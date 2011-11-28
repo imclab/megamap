@@ -19,6 +19,7 @@ MyImgList.prototype = {
 	 */
 	append : function (uri) {
 		this.imgs.push(new MyImg({'uri':uri}));
+		this.length += 1;
 	},
 	/**
 	 * Show images in the container
@@ -33,7 +34,11 @@ MyImgList.prototype = {
 	 */
 	clear : function () {
 		
-	}
+	},
+	/**
+	 * The length of the list.
+	 */
+	length : 0
 };
 
 /**
@@ -47,8 +52,6 @@ var MyImg = function (args) {
 		this[i] = args[i];
 	}
 	this.idx = 0;
-	this.x = 0;
-	
 };
 
 MyImg.prototype = {

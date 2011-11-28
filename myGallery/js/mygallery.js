@@ -18,7 +18,7 @@ var GSys = {
 		/**
 		 * The list of images
 		 */
-		imgList : null,
+		imgList : [],
 		/**
 		 * Initializes the gallery system with given parameter
 		 * @param urls imgs url given
@@ -50,8 +50,6 @@ var GSys = {
 		 * @param url
 		 */
 		appendImg : function(url) {
-			if (this.imgList === null) 
-				return;
 			this.imgList.append(url);
 		},
 		
@@ -120,9 +118,14 @@ GSys.stage = {
 			this.scn.add(this.cam);
 
 			/* Initializes the views */
+			for (var i=0; i<GSys.imgList.length; i++) {
+				MainView.appendImg(GSys.imgList[i]);
+			}
 			this.views.push(MainView);
+			console.log('fuck');
 			MainView.init();
 			
+			console.log('fuck');
 			this.renderer.render(this.scn, this.cam);
 			console.log('fuck');
 		},
@@ -137,7 +140,7 @@ GSys.stage = {
 		 * TODO possibly I should refactor this function
 		 */
 		render : function () {
-			requestAnimationFrame(GSys.stage.render);
+			//requestAnimationFrame(GSys.stage.render);
 
 			for (var i=0; i<GSys.stage.views.length; i++) {
 				GSys.stage.views[i].run();

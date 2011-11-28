@@ -21,7 +21,8 @@ var MainView = {
 	 */
 	appendImg : function(img) {
 		var newim = new MVDec(img);
-		this.imgList.push(img);
+		newim.init();
+		this.imgList.push(newim);
 	},
 
 	/**
@@ -32,7 +33,7 @@ var MainView = {
 	/**
 	 * Just a reference to main scene.
 	 */
-	scn : GSys.stage.scn,
+	scn : null,
 
 	/**
 	 * Initailize the view, and add the 
@@ -40,10 +41,12 @@ var MainView = {
 	 * mesh object to the stage
 	 */
 	init : function () {
-		for (var i=0; i<this.imgList.length && i<dispAmount; i++) {
+		this.scn = GSys.stage.scn;
+		for (var i=0; i<this.imgList.length && i<this.dispAmount; i++) {
 			if (this.imgList[i].onStage) continue;
 			this.imgList[i].onStage = true;
 			this.scn.add(this.imgList[i].mesh);
+			console.log("mesh is " + this.imgList[i].mesh);
 		}
 	},
 
