@@ -84,10 +84,11 @@ MVDec.prototype = {
 	 * Initializes the mesh objs in the decorator.
 	 */
 	init : function (config) {
-	this.mesh = new THREE.Mesh(
+		this.mesh = new THREE.Mesh(
 			new THREE.PlaneGeometry(400, 300), 
 			/* TODO We just use color instead */
-			new THREE.MeshBasicMaterial({color: config.color}));
+			new THREE.MeshBasicMaterial({transparent:true, 
+					color: config.color}));
 	}
 };
 

@@ -97,24 +97,38 @@ var MainView = {
 	run : function () {
 		if (!this.inTween) return;
 		this.accOffset += this.twOffset;
-		var i=GSys.curImg-1;
 		/* TODO I should optmize here */
-		if (this.accOffset >= 100.0) {
-			this.accOffset = 0;
-			this.inTween = false;
-			return;
-		} else  if (this.accOffset <= -100.0) {
-			this.accOffset = 0;
-			this.inTween = false;
-			return;
+		if (this.twOffset > 0) {
+			/* previous picture */
+			if (this.accOffset >= 100.0) {
+				this.accOffset = 0;
+				this.inTween = false;
+				return;
+			} 
+		} else {
+			/* next picture */
+			this._tween_next();
+			if (this.accOffset <= -100.0) {
+				this.accOffset = 0;
+				this.inTween = false;
+				return;
+			}
 		}
+	},
+
+	_tween_next : function () {
+		var i=GSys.curImg-1;
+		/* percentage */
+		var perc = this.accOffset/100.0;
 		if (i<0) i=0; /* sanity check */
+		this.imgList[i].mesh.material.opacity = 1-Math.abs(perc);
+
 		for (var j=0; i<this.imgList.length
 			&& j<this.dispAmount; i++,j++) {
 			this.imgList[i].mesh.position = 
-				{x:(j+this.accOffset/100.0)*MvDec.xOffset,
-				y:(j+this.accOffset/100.0)*MvDec.yOffset, 
-				z:-(j+this.accOffset/100.0)*MvDec.zOffset};
+				{x:(j+perc)*MvDec.xOffset,
+				y:(j+perc)*MvDec.yOffset, 
+				z:-(j+perc)*MvDec.zOffset};
 		}
 	}
 };
