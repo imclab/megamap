@@ -70,14 +70,23 @@ var MVDec = function (im) {
 	this.onStage = false;
 };
 
+/**
+ * Static variable of the class.
+ */
+MvDec = {
+	yOffset : 30,
+	zOffset : 30
+};
+
 MVDec.prototype = {
 	/**
 	 * Initializes the mesh objs in the decorator.
 	 */
-	init : function () {
+	init : function (config) {
 	this.mesh = new THREE.Mesh(
-			new THREE.PlaneGeometry(200, 200), 
-			new THREE.MeshBasicMaterial({color: 0xffff00}));
+			new THREE.PlaneGeometry(400, 300), 
+			/* TODO We just use color instead */
+			new THREE.MeshBasicMaterial({color: config.color}));
 	}
 };
 

@@ -20,8 +20,10 @@ var MainView = {
 	 * Appends a image object to the img list.
 	 */
 	appendImg : function(img) {
+		/* TODO decorator class may change */
 		var newim = new MVDec(img);
-		newim.init();
+		/* TODO the parameter is just for debugging */
+		newim.init({color: Math.random()*0xffffff});
 		this.imgList.push(newim);
 	},
 
@@ -45,8 +47,12 @@ var MainView = {
 		for (var i=0; i<this.imgList.length && i<this.dispAmount; i++) {
 			if (this.imgList[i].onStage) continue;
 			this.imgList[i].onStage = true;
-			this.scn.add(this.imgList[i].mesh);
-			console.log("mesh is " + this.imgList[i].mesh);
+			var localMesh = this.imgList[i].mesh;
+			this.scn.add(localMesh);
+			localMesh.position.z = -i*MvDec.zOffset;
+			localMesh.position.y = i*MvDec.yOffset;
+			console.log("z " + MvDec.yOffset*i);
+			console.log("z " + localMesh.position.y);
 		}
 	},
 
