@@ -7,8 +7,9 @@
  */
 var defs = {
 	/* default stage width and height */
-	SWIDTH  : 640,
-	SHEIGHT : 480
+	SWIDTH   : 640,
+	SHEIGHT  : 480,
+	BASE_CAM : {x : 0, y : 0, z : 400}
 };
 
 /**
@@ -43,6 +44,12 @@ var GSys = {
 			}
 			this.stage.init();
 			return true;
+		},
+
+		next : function () {
+		},
+
+		prev : function () {
 		},
 
 		/**
@@ -114,7 +121,7 @@ GSys.stage = {
 			/* Sets the scene object */
 			this.scn = new THREE.Scene();
 			this.cam = new THREE.PerspectiveCamera(75, this.width/this.height,1, 10000);
-			this.cam.position.z = 800;
+			this.cam.position = defs.BASE_CAM;
 			this.scn.add(this.cam);
 
 			/* Initializes the views */
