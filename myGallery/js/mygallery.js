@@ -7,7 +7,7 @@
  */
 var defs = {
 	/* default stage width and height */
-	SWIDTH : 640,
+	SWIDTH  : 640,
 	SHEIGHT : 480
 };
 
@@ -16,16 +16,25 @@ var defs = {
  */
 var GSys = {
 		/**
+		 * The list of images
+		 */
+		imgList : null,
+		/**
 		 * Initializes the gallery system with given parameter
-		 * @param args the argument given in JSON format
+		 * @param urls imgs url given
+		 * @param sargs the argument given in JSON for stage
 		 *        current support keys are:
 		 *        cont : the canvas container ID
 		 *        width : number
 		 *        height : number
 		 * @return true if initialization succeeds.
 		 */
-		init: function(args) {
-			for(var i in args) {
+		init: function(urls, sargs) {
+			this.imgList = new MyImgList();
+			for (var i=0; i<urls.length; i++) {
+				this.appendImg(urls[i]);
+			}
+			for (var i in args) {
 				this.stage[i] = args[i];
 				//TODO it may not safety
 			}
@@ -35,12 +44,15 @@ var GSys = {
 			this.stage.init();
 			return true;
 		},
+
 		/**
 		 * Appends images to the stage
 		 * @param url
 		 */
 		appendImg : function(url) {
-			this.stage.appendImg(url);
+			if (this.imgList === null) 
+				return;
+			this.imgList.append(url);
 		},
 		
 		start : function () {
@@ -58,9 +70,9 @@ GSys.stage = {
 		width : defs.SWIDTH,
 		height : defs.SHEIGHT,
 		/**
-		 * The list of images
+		 * The view objects in the stage 
 		 */
-		imgList : null,
+		views : [], 
 		/**
 		 * The container's name of the stage
 		 */
@@ -95,7 +107,6 @@ GSys.stage = {
 			if (this.contObj === undefined) {
 				return false;
 			}
-			this.imgList = new MyImgList();
 			/* Sets the gl context */
 			this.renderer = new THREE.WebGLRenderer();
 			this.renderer.setSize(this.width, this.height);
@@ -107,6 +118,9 @@ GSys.stage = {
 			this.cam = new THREE.PerspectiveCamera(75, this.width/this.height,1, 10000);
 			this.cam.position.z = 800;
 			this.scn.add(this.cam);
+
+			/* Initializes the views */
+			this.views.push(MainView);
 			
 			console.log('fuck');
 			this.renderer.render(this.scn, this.cam);
@@ -124,8 +138,10 @@ GSys.stage = {
 		render : function () {
 			requestAnimationFrame(this.render);
 		
+			for (var i=0; i<this.views.length; i++) {
+				views[i].run();
+			}
 			/* render process */
-			this.imgList.show();
 			this.renderer.render(this.scn, this.cam);
 		},
 		/**
@@ -138,59 +154,4 @@ GSys.stage = {
 };
 
 
-/**
- * The Image list class used in the gallery.
- */
-var MyImgList = function() {
-	/* the list of images */
-	this.imgs = [];
-};
-MyImgList.prototype = {
-	/**
-	 * Appends a new uri
-	 * @param uri the uri of image
-	 */
-	append : function (uri) {
-		this.imgs.push(new MyImg({'uri':uri}));
-	},
-	/**
-	 * Show images in the container
-	 */
-	show : function () {
-		for (var i=0; i<this.imgs.length; i++) {
-			
-		}
-	},
-	/**
-	 * To clear all imgs in the list
-	 */
-	clear : function () {
-		
-	}
-};
 
-/**
- * @constructor
- * The Image class of my gallery.
- * @param args the current arguments
- * 		  currently supported
- */
-var MyImg = function (args) {
-	for (var i in args) {
-		this[i] = args[i];
-	}
-	this.idx = 0;
-	this.x = 0;
-	
-	/**
-	 * Creates the mesh
-	 */
-	//TODO Change the size and the material of the mesh
-	//And it should be seperated from the constructor
-	this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), 
-			new THREE.MeshBasicMaterial({color: 0xffff00}));
-    GSys.stage.scn.add(this.mesh);
-};
-MyImg.prototype = {
-		
-};
