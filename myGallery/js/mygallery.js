@@ -34,8 +34,8 @@ var GSys = {
 			for (var i=0; i<urls.length; i++) {
 				this.appendImg(urls[i]);
 			}
-			for (var i in args) {
-				this.stage[i] = args[i];
+			for (var i in sargs) {
+				this.stage[i] = sargs[i];
 				//TODO it may not safety
 			}
 			if (this.stage.cont === null) {
@@ -121,8 +121,8 @@ GSys.stage = {
 
 			/* Initializes the views */
 			this.views.push(MainView);
+			MainView.init();
 			
-			console.log('fuck');
 			this.renderer.render(this.scn, this.cam);
 			console.log('fuck');
 		},
@@ -134,15 +134,18 @@ GSys.stage = {
 		},
 		/**
 		 * Runs rendering procedure.
+		 * TODO possibly I should refactor this function
 		 */
 		render : function () {
-			requestAnimationFrame(this.render);
-		
-			for (var i=0; i<this.views.length; i++) {
-				views[i].run();
+			requestAnimationFrame(GSys.stage.render);
+
+			for (var i=0; i<GSys.stage.views.length; i++) {
+				GSys.stage.views[i].run();
 			}
 			/* render process */
-			this.renderer.render(this.scn, this.cam);
+			GSys.stage.renderer.render(
+				GSys.stage.scn, 
+				GSys.stage.cam);
 		},
 		/**
 		 * Appends the image

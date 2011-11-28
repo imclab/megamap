@@ -5,8 +5,7 @@
 
 (function(window) {
 	window.addEventListener('load', function(){
-		GSys.init({cont:'cav', width: 600});
-		GSys.appendImg('justfakepath');
+		GSys.init(['haha'],{cont:'cav', width: 600});
 		GSys.start();
 	}, false);
 })(window);

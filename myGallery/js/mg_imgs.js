@@ -49,15 +49,32 @@ var MyImg = function (args) {
 	this.idx = 0;
 	this.x = 0;
 	
-	/**
-	 * Creates the mesh
-	 */
-	//TODO Change the size and the material of the mesh
-	//And it should be seperated from the constructor
-	this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), 
-			new THREE.MeshBasicMaterial({color: 0xffff00}));
-    GSys.stage.scn.add(this.mesh);
 };
+
 MyImg.prototype = {
 		
 };
+
+/**
+ * @constructor
+ * The decorator of main view
+ * @param im The 'MyImg' instance to be decorated
+ */
+var MVDec = function (im) {
+	this.img = im;
+	/* the mesh object */
+	this.mesh = null;
+	this.onStage = false;
+};
+
+MVDec.prototype = {
+	/**
+	 * Initializes the mesh objs in the decorator.
+	 */
+	init : function () {
+	this.mesh = new THREE.Mesh(
+			new THREE.PlaneGeometry(200, 200), 
+			new THREE.MeshBasicMaterial({color: 0xffff00}));
+	}
+};
+
