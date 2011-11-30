@@ -66,6 +66,9 @@ var GSys = {
 		},
 
 		prev : function () {
+			for (var i=0; i<this.stage.views.length; i++) {
+				if(this.stage.views[i].inTween) return;
+			}
 			this.curImg -= 1;
 			if (this.curImg < 0) {
 				this.curImg = 0;

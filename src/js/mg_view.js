@@ -84,6 +84,8 @@ var MainView = {
 		if (this.inTween) return;
 		this.inTween  = true;
 		this.twOffset = Math.abs(this.twOffset);
+		/* adds a new mesh of previous pic*/
+		this.scn.add(this.imgList[GSys.curImg].mesh);
 	},
 
 	/**
@@ -115,13 +117,20 @@ var MainView = {
 	run : function () {
 		if (!this.inTween) return;
 		this.accOffset += this.twOffset;
-		/* TODO I should optmize here */
+			/* TODO I should optmize here */
 		if (this.twOffset > 0) {
-			/* previous picture */
+		/* previous picture */
+			this._tween_prev();
 			if (this.accOffset >= 100.0) {
 				this.accOffset = 0;
 				this.inTween = false;
-			} 
+				var rmIdx = 
+					GSys.curImg-1+this.dispAmount;
+				if (rmIdx < this.imgList.length) {
+					GSys.stage.scn.remove(
+							this.imgList[rmIdx]);
+				}
+			}
 		} else {
 			/* next picture */
 			this._tween_next();
@@ -147,8 +156,10 @@ var MainView = {
 		/* percentage */
 		var perc = this.accOffset/100.0;
 		if (i<0) i=0; /* sanity check */
+		/* fade out */
 		this.imgList[i].mesh.material.opacity = 1-Math.abs(perc);
 
+		/* TODO merge the same code block in tween previous */
 		for (; i<this.imgList.length
 			&& j<this.dispAmount+1; i++,j++) {
 			this.imgList[i].mesh.position = 
@@ -159,7 +170,7 @@ var MainView = {
 		i -= 1;
 		if ( i>=0 && GSys.curImg - 1 + 
 				this.dispAmount < this.imgList.length) {
-			console.log('idx :' + i);
+			/* fade in */
 			this.imgList[i].mesh.material.opacity = 
 				Math.abs(perc);
 		}
@@ -172,7 +183,27 @@ var MainView = {
 	 */
 	_tween_prev : function () {
 		var i=GSys.curImg;
-			
+		var j=0;
+		var perc = this.accOffset/100.0;
+
+		/* fade in of the first one */
+		this.imgList[i].mesh.material.opacity = 
+			Math.abs(perc);
+		
+		for (; i<this.imgList.length && j<this.dispAmount+1; i++,j++)
+		{
+			this.imgList[i].mesh.position = 
+				{x:(j-1+perc)*MvDec.xOffset,
+				y:(j-1+perc)*MvDec.yOffset, 
+				z:-(j-1+perc)*MvDec.zOffset};
+		}
+		i -= 1;
+		if ( i>=0 && GSys.curImg - 1 + 
+				this.dispAmount < this.imgList.length) {
+			/* fade out of the last one */
+			this.imgList[i].mesh.material.opacity = 
+				1-Math.abs(perc);
+		}
 	}
 
 	
