@@ -53,14 +53,24 @@ var GSys = {
 		next : function () {
 			/* TODO current no loop */
 			this.curImg += 1;
-			if (this.curImg >= this.imgList.length)
+			if (this.curImg >= this.imgList.length) {
+				this.curImg = this.imgList.length-1;
 				return;
+			}
 			for (var i=0; i<this.stage.views.length; i++) {
 				this.stage.views[i].next();
 			}
 		},
 
 		prev : function () {
+			this.curImg -= 1;
+			if (this.curImg < 0) {
+				this.curImg = 0;
+				return;
+			}
+			for (var i=0; i<this.stage.views.length; i++) {
+				this.stage.views[i].prev();
+			}
 		},
 
 		/**
@@ -140,12 +150,9 @@ GSys.stage = {
 				MainView.appendImg(GSys.imgList[i]);
 			}
 			this.views.push(MainView);
-			console.log('fuck');
 			MainView.init();
 			
-			console.log('fuck');
 			this.renderer.render(this.scn, this.cam);
-			console.log('fuck');
 		},
 		/**
 		 * Starts the scene logic

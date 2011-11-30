@@ -67,7 +67,7 @@ var MVDec = function (im) {
 	this.img = im;
 	/* the mesh object */
 	this.mesh = null;
-	this.onStage = false;
+	this.loaded = false;
 };
 
 /**

@@ -62,12 +62,28 @@ var MainView = {
 	accOffset : 0,
 
 	/**
-	 * Switches to next pics
+	 * Switches to the next picture
 	 */
 	next : function () {
 		if (this.inTween) return;
-		this.inTween = true;
+		this.inTween  = true;
 		this.twOffset = -Math.abs(this.twOffset);
+		/* adds a new mesh if exists */
+		var newIdx = GSys.curImg+this.dispAmount-1;
+		if (newIdx < this.imgList.length) {
+			this.scn.add(this.imgList[newIdx].mesh);
+			console.log(newIdx);
+			this.imgList[newIdx].mesh.material.opacity = .0;
+		}
+	},
+	
+	/**
+	 * Switches to the previous picture
+	 */
+	prev : function () {
+		if (this.inTween) return;
+		this.inTween  = true;
+		this.twOffset = Math.abs(this.twOffset);
 	},
 
 	/**
@@ -81,8 +97,7 @@ var MainView = {
 
 		for (var i=0; i<this.imgList.length && 
 				i<this.dispAmount; i++) {
-			if (this.imgList[i].onStage) continue;
-			this.imgList[i].onStage = true;
+			this.imgList[i].loaded = true;
 			var localMesh = this.imgList[i].mesh;
 			this.scn.add(localMesh);
 			localMesh.position.x = i*MvDec.xOffset;
@@ -90,6 +105,9 @@ var MainView = {
 			localMesh.position.z = -i*MvDec.zOffset;
 		}
 
+		/* TODO move the camera section's code 
+		 * to another place
+		 */
 		this.cam.position = this.BASE_CAM;
 		this.cam.lookAt({x:0, y:0, z:0});
 	},
@@ -103,7 +121,6 @@ var MainView = {
 			if (this.accOffset >= 100.0) {
 				this.accOffset = 0;
 				this.inTween = false;
-				return;
 			} 
 		} else {
 			/* next picture */
@@ -111,25 +128,53 @@ var MainView = {
 			if (this.accOffset <= -100.0) {
 				this.accOffset = 0;
 				this.inTween = false;
-				return;
+				/* TODO index */
+				GSys.stage.scn.remove(
+					this.imgList[GSys.curImg-1].mesh);	
+				console.log('removed');
 			}
 		}
 	},
 
+	/**
+	 * @private
+	 * Performs the tween animation for switching to
+	 * next picture. 
+	 */
 	_tween_next : function () {
 		var i=GSys.curImg-1;
+		var j=0;
 		/* percentage */
 		var perc = this.accOffset/100.0;
 		if (i<0) i=0; /* sanity check */
 		this.imgList[i].mesh.material.opacity = 1-Math.abs(perc);
 
-		for (var j=0; i<this.imgList.length
-			&& j<this.dispAmount; i++,j++) {
+		for (; i<this.imgList.length
+			&& j<this.dispAmount+1; i++,j++) {
 			this.imgList[i].mesh.position = 
 				{x:(j+perc)*MvDec.xOffset,
 				y:(j+perc)*MvDec.yOffset, 
 				z:-(j+perc)*MvDec.zOffset};
 		}
+		i -= 1;
+		if ( i>=0 && GSys.curImg + 
+				this.dispAmount < this.imgList.length) {
+			console.log('idx :' + i);
+			this.imgList[i].mesh.material.opacity = 
+				Math.abs(perc);
+		}
+	},
+
+	/**
+	 * @private
+	 * Performs the tween animation for swithing to
+	 * previous picture.
+	 */
+	_tween_prev : function () {
+		var i=GSys.curImg;
+			
 	}
+
+	
 };
 
