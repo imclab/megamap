@@ -157,7 +157,7 @@ var MainView = {
 				z:-(j+perc)*MvDec.zOffset};
 		}
 		i -= 1;
-		if ( i>=0 && GSys.curImg + 
+		if ( i>=0 && GSys.curImg - 1 + 
 				this.dispAmount < this.imgList.length) {
 			console.log('idx :' + i);
 			this.imgList[i].mesh.material.opacity = 

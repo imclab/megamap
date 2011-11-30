@@ -52,6 +52,9 @@ var GSys = {
 
 		next : function () {
 			/* TODO current no loop */
+			for (var i=0; i<this.stage.views.length; i++) {
+				if(this.stage.views[i].inTween) return;
+			}
 			this.curImg += 1;
 			if (this.curImg >= this.imgList.length) {
 				this.curImg = this.imgList.length-1;
