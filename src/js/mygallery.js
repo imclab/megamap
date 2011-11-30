@@ -144,6 +144,7 @@ GSys.stage = {
 			this.renderer.setSize(this.width, this.height);
 			this.renderer.setClearColorHex(0x0, 1.0);
 			this.contObj.appendChild(this.renderer.domElement);
+			MouseMgr.attach(this.renderer.domElement);
 			
 			/* Sets the scene object */
 			this.scn = new THREE.Scene();
@@ -190,5 +191,28 @@ GSys.stage = {
 		}
 };
 
+/**
+ * The mouse manager of the gallery.
+ */
+var MouseMgr = {
+	x : 0,
+	y : 0,
 
+	/**
+	 * Attach the mouse event to the mouse manager.
+	 * @param cont the container 
+	 */
+	attach : function (cont) {
+		cont.addEventListener('mousemove',
+			function(e) {
+				MouseMgr.x = e.layerX;
+				MouseMgr.y = e.layerY;
+			},
+			false);
+
+	},
+
+	detach : function (contId, callback) {
+	}
+};
 

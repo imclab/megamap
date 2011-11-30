@@ -74,9 +74,9 @@ var MVDec = function (im) {
  * Static variable of the class.
  */
 MvDec = {
-	xOffset : 50,
-	yOffset : 80,
-	zOffset : 120
+	xOffset : 120,
+	yOffset : 100,
+	zOffset : 160
 };
 
 MVDec.prototype = {

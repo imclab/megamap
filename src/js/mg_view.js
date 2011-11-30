@@ -32,8 +32,8 @@ var MainView = {
 	 */
 	dispAmount : 4,
 
-	BASE_CAM : {x: defs.BASE_CAM.x+180,
-				y: defs.BASE_CAM.y+180,
+	BASE_CAM : {x: defs.BASE_CAM.x,//+180,
+				y: defs.BASE_CAM.y,//+180,
 				z: defs.BASE_CAM.z},
 
 	/**
@@ -107,14 +107,34 @@ var MainView = {
 			localMesh.position.z = -i*MvDec.zOffset;
 		}
 
-		/* TODO move the camera section's code 
-		 * to another place
-		 */
-		this.cam.position = this.BASE_CAM;
+		this._upCam();
+	},
+
+	/**
+	 * @private
+	 * Updates the camera.
+	 */
+	_upCam : function () {
+		this.cam.position = {
+			x : this.BASE_CAM.x + 100,
+			y : this.BASE_CAM.y,
+			z : this.BASE_CAM.z
+		};
+		/* 
+		this.cam.position = 
+			{x:this.BASE_CAM.x-.5*GSys.stage.width
+				+ MouseMgr.x,
+			 y:this.BASE_CAM.y+.5*GSys.stage.width
+				- MouseMgr.y,
+			 z:this.BASE_CAM.z};
+	 	console.log('cam ' + this.cam.position);
+		*/
 		this.cam.lookAt({x:0, y:0, z:0});
 	},
 
 	run : function () {
+		/* TODO add a camera manager */
+		//this._upCam();
 		if (!this.inTween) return;
 		this.accOffset += this.twOffset;
 			/* TODO I should optmize here */
