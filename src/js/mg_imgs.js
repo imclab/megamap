@@ -45,17 +45,37 @@ MyImgList.prototype = {
  * @constructor
  * The Image class of my gallery.
  * @param args the current arguments
- * 		  currently supported
+ * 		 uri : the uri of the image 
  */
 var MyImg = function (args) {
 	for (var i in args) {
 		this[i] = args[i];
 	}
-	this.idx = 0;
+	this.loadListeners = [];
+
+	this.img = new Image();
+	/**
+	 * @private 
+	 * Called when the image is loaded.
+	 * Calls every onImgLoad function of each objs
+	 */
+	this.img.onload = (function(self) {
+		return function() {
+				console.log(self);
+			for (var i=0; i<self.loadListeners.length; i++) {
+				self.loadListeners[i].onImgLoad();
+			}
+		};})(this);
+	this.img.src = this.uri;
 };
 
 MyImg.prototype = {
-		
+	/**
+	 * Add a listener if image loads
+	 */
+	addLoadListener : function(obj) {
+		this.loadListeners.push(obj);
+	}
 };
 
 /**
@@ -65,8 +85,14 @@ MyImg.prototype = {
  */
 var MVDec = function (im) {
 	this.img = im;
+	this.img.addLoadListener(this);
+	this.texture = new THREE.Texture(this.img.img, new THREE.UVMapping(), 
+									 THREE.ClampToEdgeWrapping, 
+									 THREE.ClampToEdgeWrapping, 
+									 THREE.NearestFilter, 
+									 THREE.LinearMipMapLinearFilter );
 	/* the mesh object */
-	this.mesh = null;
+	this._init();
 	this.loaded = false;
 };
 
@@ -81,14 +107,20 @@ MvDec = {
 
 MVDec.prototype = {
 	/**
+	 * @private
 	 * Initializes the mesh objs in the decorator.
 	 */
-	init : function (config) {
+	_init : function (config) {
 		this.mesh = new THREE.Mesh(
 			new THREE.PlaneGeometry(400, 300), 
 			/* TODO We just use color instead */
-			new THREE.MeshBasicMaterial({transparent:true, 
-					color: config.color}));
+			new THREE.MeshBasicMaterial(
+				{transparent:true, 
+					map: this.texture}));
+	},
+
+	onImgLoad : function() {
+		this.texture.needsUpdate = true;
 	}
 };
 

@@ -19,7 +19,7 @@ var GSys = {
 		/**
 		 * The list of images
 		 */
-		imgList : [],
+		imgList : null,
 		/**
 		 * Current displayed image pointer
 		 */
@@ -154,7 +154,7 @@ GSys.stage = {
 
 			/* Initializes the views */
 			for (var i=0; i<GSys.imgList.length; i++) {
-				MainView.appendImg(GSys.imgList[i]);
+				MainView.appendImg(GSys.imgList.imgs[i]);
 			}
 			this.views.push(MainView);
 			MainView.init();

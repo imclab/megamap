@@ -22,8 +22,6 @@ var MainView = {
 	appendImg : function(img) {
 		/* TODO decorator class may change */
 		var newim = new MVDec(img);
-		/* TODO the parameter is just for debugging */
-		newim.init({color: Math.random()*0xffffff});
 		this.imgList.push(newim);
 	},
 
@@ -72,7 +70,6 @@ var MainView = {
 		var newIdx = GSys.curImg+this.dispAmount-1;
 		if (newIdx < this.imgList.length) {
 			this.scn.add(this.imgList[newIdx].mesh);
-			console.log(newIdx);
 			this.imgList[newIdx].mesh.material.opacity = .0;
 		}
 	},
