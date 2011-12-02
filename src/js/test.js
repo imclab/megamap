@@ -11,9 +11,7 @@
 				'img/wp3.png',
 				'img/wp4.png',
 				'img/wp5.jpg',
-				'img/wp6.jpg',
-				'd'],
-
+				'img/wp6.jpg'],
 			{cont:'cav', width: 900, height: 540});
 		GSys.start();
 		/* binding next */

@@ -61,11 +61,16 @@ var MyImg = function (args) {
 	 */
 	this.img.onload = (function(self) {
 		return function(e) {
-				console.log(e);
 			for (var i=0; i<self.loadListeners.length; i++) {
 				self.loadListeners[i].onImgLoad();
 			}
 		};})(this);
+	this.img.onerror = (function(self) {
+		return function(e) {
+			/* TODO on error handler */
+			alert('can not load ' + self.img.src);
+		};
+	})(this);
 	this.img.src = this.uri;
 };
 
@@ -111,16 +116,24 @@ MVDec.prototype = {
 	 * Initializes the mesh objs in the decorator.
 	 */
 	_init : function (config) {
-		this.mesh = new THREE.Mesh(
-			new THREE.PlaneGeometry(400, 300), 
-			/* TODO We just use color instead */
-			new THREE.MeshBasicMaterial(
-				{transparent:true, 
-					map: this.texture}));
+		this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(400, 300),
+								   new THREE.MeshBasicMaterial(
+									   {transparent : true,
+									   map : GSys.loadingTex}));
 	},
 
 	onImgLoad : function() {
+		/*
+		this.mesh = new THREE.Mesh(
+			new THREE.PlaneGeometry(400, 300), 
+			new THREE.MeshBasicMaterial(
+				{transparent:true, 
+					map: this.texture}));
+					*/
 		this.texture.needsUpdate = true;
+		this.mesh.material.map = this.texture;
+		this.mesh.updateMatrix();
+		console.log('loaded mesh' + this.mesh);
 	}
 };
 

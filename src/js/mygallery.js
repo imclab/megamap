@@ -1,5 +1,7 @@
 /**
+ * This is the main file of mygallery
  * @author Ye Jiabin
+ * @require Three.js
  */
 
 /**
@@ -9,6 +11,9 @@ var defs = {
 	/* default stage width and height */
 	SWIDTH   : 640,
 	SHEIGHT  : 480,
+	/* default image width the height */
+	IWIDTH   : 400,
+	IHEIGHT  : 300,
 	BASE_CAM : {x : 0, y : 0, z : 400}
 };
 
@@ -27,8 +32,10 @@ var GSys = {
 
 		/**
 		 * A texture for displaying loading image
+		 * Image and texture object.
 		 */
 		loadingImg : null,
+		loadingTex : null,
 
 		/**
 		 * Initializes the gallery system with given parameter
@@ -42,6 +49,7 @@ var GSys = {
 		 */
 		init: function(urls, sargs) {
 			this.imgList = new MyImgList();
+			this._mkLoading();
 			for (var i=0; i<urls.length; i++) {
 				this.appendImg(urls[i]);
 			}
@@ -95,6 +103,40 @@ var GSys = {
 		
 		start : function () {
 			this.stage.start();
+		},
+
+		/**
+		 * @private Just a funtion to make loading img
+		 */
+		_mkLoading : function () {
+			this.loadingImg = new Image();
+			this.loadingTex = new THREE.Texture(this.loadingImg, 
+												new THREE.UVMapping(), 
+											 THREE.ClampToEdgeWrapping, 
+											 THREE.ClampToEdgeWrapping, 
+											 THREE.NearestFilter, 
+											 THREE.LinearMipMapLinearFilter );
+			this.loadingImg.onload = (function(self) {
+				return function(e) {
+					self.loadingTex.needsUpdate = true;
+				};
+			})(this);
+			var localCav = document.createElement('canvas');
+			localCav.width = defs.IWIDTH;
+			localCav.height = defs.IHEIGHT;
+			var localCtx = localCav.getContext('2d');
+			var padding = 10.0;
+			var grad = localCtx.createLinearGradient(padding, padding, 
+				 localCav.width-padding, localCav.height-padding);
+			grad.addColorStop(0.0, '#ff0000');
+			grad.addColorStop(1.0, '#ffff00');
+			localCtx.fillStyle = grad;
+			localCtx.fillRect (padding, padding, 
+				localCav.width-padding, localCav.height-padding);
+			localCtx.fillStyle = '#ffffff';
+			localCtx.font = '4em monospace';
+			localCtx.fillText("Loading ...", 40, 150);
+			this.loadingImg.src = localCav.toDataURL('image/png');
 		}
 };
 
