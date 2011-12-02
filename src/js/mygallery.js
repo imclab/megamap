@@ -24,6 +24,12 @@ var GSys = {
 		 * Current displayed image pointer
 		 */
 		curImg : 0,
+
+		/**
+		 * A texture for displaying loading image
+		 */
+		loadingImg : null,
+
 		/**
 		 * Initializes the gallery system with given parameter
 		 * @param urls imgs url given

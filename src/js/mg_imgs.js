@@ -60,8 +60,8 @@ var MyImg = function (args) {
 	 * Calls every onImgLoad function of each objs
 	 */
 	this.img.onload = (function(self) {
-		return function() {
-				console.log(self);
+		return function(e) {
+				console.log(e);
 			for (var i=0; i<self.loadListeners.length; i++) {
 				self.loadListeners[i].onImgLoad();
 			}

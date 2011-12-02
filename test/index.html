@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type='text/javascript'>
+window.addEventListener('load',function(e) {
+	var cont = document.getElementById('cav');
+	cont.width = 400;
+	cont.height = 300;
+	var ctx = cont.getContext('2d');
+	var padding = 10;
+	var grad = ctx.createLinearGradient(padding, padding, 
+		 cont.width-padding, cont.height-padding);
+	grad.addColorStop(0.0, '#ff0000');
+	grad.addColorStop(1.0, '#ffff00');
+	ctx.fillStyle = grad;
+	ctx.fillRect (padding, padding, 
+		cont.width-padding, cont.height-padding);
+	ctx.fillStyle = '#ffffff';
+	ctx.font = '4em monospace';
+	ctx.fillText("Loading ...", 40, 150);
+	url = cont.toDataURL('image/png');
+	console.log(url);
+}, false);
+</script>
+</head>
+<body>
+<canvas id='cav'>
+</canvas>
+</body>
+</html>
