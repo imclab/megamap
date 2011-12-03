@@ -215,7 +215,7 @@ var MainView = {
 				z:-(j-1+perc)*MvDec.zOffset};
 		}
 		i -= 1;
-		if ( i>=0 && GSys.curImg - 1 + 
+		if ( i>=0 && GSys.curImg - 0 + 
 				this.dispAmount < this.imgList.length) {
 			/* fade out of the last one */
 			this.imgList[i].mesh.material.opacity = 

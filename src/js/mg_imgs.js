@@ -132,7 +132,6 @@ MVDec.prototype = {
 					*/
 		this.texture.needsUpdate = true;
 		this.mesh.material.map = this.texture;
-		this.mesh.updateMatrix();
 		console.log('loaded mesh' + this.mesh);
 	}
 };
