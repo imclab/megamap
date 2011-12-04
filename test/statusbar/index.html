@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>status bar</title>
+<style type='text/css'>
+#mg_st {
+	background : #000;	
+}
+
+#mg_sb {
+	position      : relative;
+	left          : 10 px;
+	top           : 20px;
+	border-radius : 10px;
+	box-shadow    : 0 0 10px #FFF;
+	cursor           : pointer;
+	background       : #F00;
+	background-image : -moz-linear-gradient(0% 100% 90deg,#000000, #A12031, #C7C7C7 100%);
+}
+
+#mg_sb:hover {
+	background-image : -moz-linear-gradient(15% 100% 90deg, #A12031, #C7C7C7);
+}
+
+.mg_hr {
+	position : relative;
+	width : 100%;
+	background-color : #C7C7C7;
+
+}
+
+</style>
+<script type='text/javascript'>
+window.addEventListener('load', function(e) {
+	var config = {mg_st : {width : '800px', height : '200px'},
+		mg_sb : {height : '20px' }};
+
+	var mg_st = document.getElementById('mg_st');
+	var mg_sb = document.getElementById('mg_sb');
+	for (var i in config.mg_st) {
+		mg_st.style[i] = config.mg_st[i];
+	}
+	for (var i in config.mg_sb) {
+		mg_sb.style[i] = config.mg_sb[i];
+	}
+	
+},false);
+</script>
+</head>
+<body>
+<div id='mg_st'>
+	<div id='mg_imgs'>
+	</div>
+	<div id='mg_sb'>
+	</div>
+	<div class='mg_hr'>
+	</div>
+</div>
+</body>
+</html>
