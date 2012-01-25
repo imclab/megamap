@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chinese Map</title>
+	<link rel='stylesheet' type='text/css' href='css/mm3d.css'>
+	<script type="text/javascript" src='js/Three.js'></script>
+	<script type="text/javascript" src='js/mm3d.js'></script>
+	<script type="text/javascript">
+		(function(window) {
+			window.addEventListener('load',
+				function(evt) {
+					try { 
+						var cMap = new mm3d.ChineseMap(document.getElementById('viewport'));
+						cMap.init();
+					
+						cMap.setTitle("China's population status (2010)");
+					} catch (exc) {
+						console.warn('exception:' + exc.message);
+					}
+				}, false);
+		})(window);
+	</script>
+</head>
+<body>
+	<div id="viewport"></div>
+</body>
+</html>
