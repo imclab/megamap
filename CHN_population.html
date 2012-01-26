@@ -10,14 +10,15 @@
 		(function(window) {
 			window.addEventListener('load',
 				function(evt) {
-					try { 
-						var cMap = new mm3d.ChineseMap(document.getElementById('viewport'));
+				//	try { 
+						var cMap = new mm3d.ChineseMap(
+							document.getElementById('viewport'));
 						cMap.init();
 					
 						cMap.setTitle("China's population status (2010)");
-					} catch (exc) {
-						console.warn('exception:' + exc.message);
-					}
+				//	} catch (exc) {
+				//		console.warn('exception:' + exc.message);
+				//	}
 				}, false);
 		})(window);
 	</script>

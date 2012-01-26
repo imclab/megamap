@@ -1,5 +1,5 @@
 /**
- * my map 3d library, visiualizes map data in 3d.
+ * megamap 3d library, visualizes map data in 3d.
  * @author Ye Jiabin
  * @requre three.js
  */
@@ -18,7 +18,7 @@ if (!window.requestAnimationFrame) {
 }
 
 /**
- * The global namespace of my map library.
+ * The global namespace of megamap library.
  */
 var mm3d = {};
 
@@ -26,9 +26,20 @@ mm3d.EPSILON = .0001;
 mm3d.baseHeight = .5;
 mm3d.LINEAR_GRADIENT = 0;
 
+mm3d.PAN_TOP = 4;
+mm3d.PAN_LEFT = 1;
+mm3d.PAN_RIGHT = 2;
+mm3d.PAN_DOWN = 3;
+
+mm3d.sortData = function(a, b) {
+	return - a.data + b.data;
+};
+
 mm3d.mouseState = { down : false,
+	pan : 0,
 	last : {x : 0, y : 0}, 
-	cur : {x : 0, y : 0} };
+	cur : {x : 0, y : 0} 
+};
 
 /**
  * @constructor
@@ -62,7 +73,7 @@ mm3d.ChineseMap = function (cont, config) {
 
 	this.title = "";
 	this.minVal = this.maxVal = 0;
-	this.modelChanged = false;
+	this._modelChanged = false;
 	
 	/**
 	 * The data containing map information.
@@ -77,7 +88,7 @@ mm3d.ChineseMap = function (cont, config) {
 		{ name : 'Jiangxi'      , data : 44567475  } ,
 		{ name : 'Henan'        , data : 94023567  } ,
 		{ name : 'Hainan'       , data : 8671518   } ,
-		{ name : 'Taiwan'       , data : 23224912  } ,
+		{ name : 'Taiwan'       , data : 23162123  } ,
 		{ name : 'Hunan'        , data : 65683722  } ,
 		{ name : 'Sichuan'      , data : 80418200  } ,
 		{ name : 'Yunnan'       , data : 45966239  } ,
@@ -99,6 +110,8 @@ mm3d.ChineseMap = function (cont, config) {
 		{ name : 'Beijing'      , data : 19612368  } ,
 		{ name : 'Guangdong'    , data : 104303132 } ,
 		{ name : 'Guizhou'      , data : 34746468  } ,
+		{ name : 'Hongkong'     , data : 7097600   } ,
+		{ name : 'Macau'        , data : 552300    } ,
 		{ name : 'Fujian'       , data : 36894216  } 
 	];
 
@@ -123,10 +136,11 @@ mm3d.ChineseMap = function (cont, config) {
 		}
 	}
 
+	this._data.sort(mm3d.sortData);
 	/* calculates the max value */
-	for (var i=0; i<this._data.length; i++) {
-		this.maxVal = this._data[i].data > this.maxVal ? this._data[i].data : this.maxVal;
-	}
+	//for (var i=0; i<this._data.length; i++) {
+	this.maxVal = this._data[0].data ; //> this.maxVal ? this._data[0].data : this.maxVal;
+	//}
 
 	this._maxbarHeight = this.maxVal > 39.125 ? 39.125 : this.maxVal;
 
@@ -154,6 +168,84 @@ mm3d.ChineseMap.prototype = {
 			ratio * (ed.g - st.g) + st.g,
 			ratio * (ed.b - st.b) + st.b);
 		return returnColor;
+	},
+
+	/**
+	 * @private
+	 * Initalize loading panel.
+	 */
+	_initLoading : function () {
+		this._loadingNode = document.createElement('div');
+		this._loadingNode['id'] = 'mm3dLoading';
+		this._loadingNode['style']['width'] = this._option['size'][0] + 'px';
+		this._loadingNode['style']['height'] = this._option['size'][1] + 'px';
+
+		var loadingTitle = document.createElement('div');
+		loadingTitle['className'] = 'mm3dLoadingTitle';
+		loadingTitle.innerHTML = 'LOADING ...';
+
+		var loadingContent = document.createElement('div');
+		loadingContent['className'] = 'mm3dLoadingContent';
+
+		this._loadingNode['changeContent'] = (function(node) {
+			return function (txt) {
+				loadingContent.innerHTML = txt;
+			};
+		})(loadingContent);
+
+		this._loadingNode.appendChild(loadingTitle);
+		this._loadingNode.appendChild(loadingContent);
+
+		this._vp.appendChild(this._loadingNode);
+
+		/* relocates the loading container */
+		loadingTitle['style']['top'] = 
+			(this._option['size'][1] - 
+				parseInt(loadingTitle.clientHeight))*.5 + 'px';
+		
+		loadingContent['style']['top'] = 
+			(this._option['size'][1] + 
+				parseInt(loadingTitle.clientHeight))*.5 + 'px';
+	},
+
+	/**
+	 * @private
+	 * Initialize the camera control ui.
+	 */
+	_initCamCtrl : function () {
+		this._camNode = document.createElement('div');
+		this._camNode['id'] = 'mm3dCamContainer';
+
+		/* the buttons for panning view point */
+		var buttonRadius = 18;
+		var sqrt2 = Math.sqrt(2);
+		var panButtonsCfg = [
+			{pos : [2*sqrt2-1, sqrt2-1], sign : mm3d.PAN_TOP},
+			{pos : [sqrt2-1, 2*sqrt2-1], sign : mm3d.PAN_LEFT},
+			{pos : [3*sqrt2-1, 2*sqrt2-1], sign : mm3d.PAN_RIGHT},
+			{pos : [2*sqrt2-1, 3*sqrt2-1], sign : mm3d.PAN_DOWN}
+		];
+
+		for (var i=0; i<panButtonsCfg.length; i++) {
+			var panButton = document.createElement('div');
+			panButton['className'] = 'mm3dCamButton';
+			panButton['style']['left'] = buttonRadius*panButtonsCfg[i]['pos'][0] + 'px';
+			panButton['style']['top'] = buttonRadius*panButtonsCfg[i]['pos'][1] + 'px';
+			panButton.addEventListener('mousedown', (function(s) {
+				return function () {
+					mm3d.mouseState['pan'] = s;
+					mm3d.mouseState['down'] = true;
+					
+				};
+			})(panButtonsCfg[i]['sign']), false);
+			panButton.addEventListener('mouseup', function(s) {
+				mm3d.mouseState['down'] = false;
+			}, false);
+
+			this._camNode.appendChild(panButton);
+		}
+
+		this._vp.appendChild(this._camNode);
 	},
 
 	/**
@@ -252,6 +344,7 @@ mm3d.ChineseMap.prototype = {
 		}, false);
 		this._vp.addEventListener('mouseup', function(e) {
 			mm3d.mouseState.down = false;
+			mm3d.mouseState.pan = 0;
 		}, false);
 		this._vp.addEventListener('mousemove', function(e) {
 			mm3d.mouseState.last = mm3d.mouseState.cur;
@@ -322,7 +415,9 @@ mm3d.ChineseMap.prototype = {
 		srCtx.fillStyle = gbar;
 		srCtx.fillRect(0, 0, scaleRuleWidth, scaleRuleHeight);
 
+		this._initLoading();
 		this._initLegend();
+		this._initCamCtrl();
 		this._mkTitle();
 
 		/**
@@ -361,50 +456,60 @@ mm3d.ChineseMap.prototype = {
 		 * Rendering scene procedure.
 		 */
 		this._renderScene = function () {
-			if (this.modelChanged) {
+			if (this._modelChanged) {
 				//TODO changed the model
 			}
 
 			/* rotate mouse */
-			if (mm3d.mouseState.down) {
-				var cX = mm3d.mouseState.cur.x, 
-					cY = mm3d.mouseState.cur.y;
-				var lX = mm3d.mouseState.last.x, 
-					lY = mm3d.mouseState.last.y;
-				var yDiff = cY - lY, xDiff =  -cX + lX;
-
-				if (Math.abs(yDiff)> mm3d.EPSILON 
-						|| Math.abs(xDiff) > mm3d.EPSILON) {
-					var thetaY = yDiff * .5 * Math.PI/ this._option.size[1];	
-					var thetaX = xDiff * .5 * Math.PI/ this._option.size[0];	
-
-					for (var i=0; i<this._data.length; i++) {
-						this._data[i]['mesh'].rotation.x += thetaY;
-						this._data[i]['mesh'].rotation.z += thetaX;
+			if (mm3d.mouseState.down ) {
+				if (mm3d.mouseState['pan'] !== 0) {
+					/* pan the camera */
+					var delta = .05;
+					/*
+					var deltaVector = {
+						x : this._lookAtPos.x - this._three.camera.position.x,
+						y : this._lookAtPos.y - this._three.camera.position.y,
+						z : this._lookAtPos.z - this._three.camera.position.z
+					};
+					*/
+					switch (mm3d.mouseState['pan']) {
+					case mm3d.PAN_TOP:
+						this._three.camera.position.z -= delta;
+						this._lookAtPos.z -= delta;
+						break;
+					case mm3d.PAN_DOWN:
+						this._three.camera.position.z += delta;
+						this._lookAtPos.z += delta;
+						break;
+					case mm3d.PAN_RIGHT:
+						this._three.camera.position.x += delta;
+						this._lookAtPos.x += delta;
+						break;
+					case mm3d.PAN_LEFT:
+						this._three.camera.position.x -= delta;
+						this._lookAtPos.x -= delta;
+						break;
+					default:
+						break;
 					}
+					this._three.camera.lookAt(this._lookAtPos);
+				} else {
+					var cX = mm3d.mouseState.cur.x, 
+						cY = mm3d.mouseState.cur.y;
+					var lX = mm3d.mouseState.last.x, 
+						lY = mm3d.mouseState.last.y;
+					var yDiff = cY - lY, xDiff =  -cX + lX;
 
-					// var dy = this._three.camera.position.y
-					// 	- this._lookAtPos.y;
-					// var dz = this._three.camera.position.z
-					// 	- this._lookAtPos.z;
-					// var newY = dy*Math.cos(thetaY) - dz*Math.sin(thetaY);
-					// var newZ = dz*Math.cos(thetaY) + dy*Math.sin(thetaY);
-					// this._three.camera.position.set(
-					// 	this._three.camera.position.x,
-					// 	this._lookAtPos.y + newY,
-					// 	this._lookAtPos.z + newZ
-					// );
+					if (Math.abs(yDiff)> mm3d.EPSILON 
+							|| Math.abs(xDiff) > mm3d.EPSILON) {
+						var thetaY = yDiff * .5 * Math.PI/ this._option.size[1];	
+						var thetaX = xDiff * .5 * Math.PI/ this._option.size[0];	
 
-					// /* now, dy = newY */
-					// var dx = this._three.camera.position.x
-					// 	- this._lookAtPos.x;
-					// var newX = dx*Math.cos(thetaX) - newY*Math.sin(thetaX);
-					// newY = newY*Math.cos(thetaX) + dx*Math.sin(thetaX);
-					// this._three.camera.position.set(
-					// 	this._lookAtPos.x + newX,
-					// 	this._lookAtPos.y + newY,
-					// 	this._three.camera.position.z
-					// );
+						for (var i=0; i<this._data.length; i++) {
+							this._data[i]['mesh'].rotation.x += thetaY;
+							this._data[i]['mesh'].rotation.z += thetaX;
+						}
+					}
 				}
 			}
 
@@ -423,7 +528,6 @@ mm3d.ChineseMap.prototype = {
 			(function(that, i) {
 				that._three.loader.load({model : 'js/map'+that._data[i]['name']+'.js',
 				callback : function(geo) { 
-					console.log(that._data[i]['name'] + ' loaded.'); 
 						that._loadedMesh.push(i);
 						var barHeight = that._data[i]['data']/that.maxVal*that._maxbarHeight;
 						that._data[i]['mesh'] = new THREE.Mesh(geo, 
@@ -438,10 +542,13 @@ mm3d.ChineseMap.prototype = {
 						// that._data[i]['mesh'].material.opacity = barHeight/that.maxVal;
 						//that._data[i]['mesh'].position.y = (1+barHeight)*.5*.08;
 						
+						that._loadingNode.changeContent('Mesh ' + that._data[i]['name'] + ' loaded. '
+							+ (that._loadedMesh.length/that._data.length)*100 + '%'); 
 
 						if (that._loadedMesh.length >= that._data.length) {
 							console.log("loads complete.");
 							/* begin to render scene */
+							that._vp.removeChild(that._loadingNode);
 							that._mainloop(that)();
 						}
 					} 
@@ -458,8 +565,22 @@ mm3d.ChineseMap.prototype = {
 
 	},
 
+	/**
+	 * @private
+	 * The method is invoked when data model is changed.
+	 */
+	_repaintModel : function () {
+		for (var i=0; i<this._data.length; i++) {
+			
+		}
+	},
+
 	change : function (config) {
 
+	},
+
+	changeData : function (model) {
+		this._data = model;	
 	}
 };
 

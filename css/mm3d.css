@@ -20,7 +20,7 @@
 }
 
 #mm3dTitle {
-	color          : #dff              ;
+	color          : #eee              ;
 	width          : 70%               ;
 	font-size      : 1.2em             ;
 	font-weight    : bold              ;
@@ -29,6 +29,35 @@
 	vertical-align : middle            ;
 	position       : absolute          ;
 	z-index        : 199               ;
+}
+
+#mm3dLoading {
+	position : absolute;
+	left :  0;
+	right : 0;
+	background-color : #000;
+	z-index : 198;
+}
+
+#mm3dLoading  > div {
+	position : absolute;
+	width    : 80%;
+	margin-left : 10%;
+	margin-right: 10%;
+	text-align : center;
+	vertical-align : middle;
+}
+
+.mm3dLoadingTitle {
+	font-size : 2.5em;
+	font-weight : bold;
+	color : #ffc;
+	text-shadow : 0 0 5px #fff;
+}
+
+.mm3dLoadingContent {
+	font-size : .8em;
+	color : #fff;
 }
 
 #mm3dMaxTag {
@@ -53,7 +82,31 @@
 
 #mm3dLegend {
 	display  : block;
-	overflow : hidden;
+	overflow : scroll;
+}
+
+#mm3dCamContainer {
+	position : absolute;
+	z-index  : 200;
+	left     : 12px;
+	top      : 12px;
+}
+
+#mm3dCamContainer > .mm3dCamButton {
+	display : block;
+	cursor : pointer;
+	position : absolute;
+	width : 30px;
+	height : 30px;
+	background-color : rgba(188, 188, 188, .5);
+	transform : rotate(45deg);
+	-moz-transform : rotate(45deg);
+	-webkit-transform : rotate(45deg);
+	-o-transform : rotate(45deg);
+}
+
+#mm3dCamContainer > .mm3dCamButton:hover {
+	background-color : rgba(188, 188, 188, 1);
 }
 
 .mm3dToolbar {
