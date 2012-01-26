@@ -18,7 +18,7 @@ if (!window.requestAnimationFrame) {
 }
 
 /**
- * The global namespace of my map library.
+ * The global namespace of megamap library.
  */
 var mm3d = {};
 
@@ -52,7 +52,7 @@ mm3d.mouseState = { down : false,
  *        dataUrl : {String} the data url for fetching the data via ajax
  *        showLegend : {Boolean} shows the legend of the map chart
  */
-mm3d.ChineseMap = function (cont, config) {
+mm3d.ChineseMap = function (cont, dataModel, config) {
 	if (typeof cont !== 'object') {
 		throw { message : 'Cannot intialize with null container.'};
 	} else {
@@ -78,42 +78,51 @@ mm3d.ChineseMap = function (cont, config) {
 	/**
 	 * The data containing map information.
 	 */
-	this._data = [
-		{ name : 'Zhejiang'     , data : 54426891  } ,
-		{ name : 'Jiangsu'      , data : 78659903  } ,
-		{ name : 'Shandong'     , data : 95793065  } ,
-		{ name : 'Anhui'        , data : 59500510  } ,
-		{ name : 'Shanghai'     , data : 23019148  } ,
-		{ name : 'Hebei'        , data : 71854202  } ,
-		{ name : 'Jiangxi'      , data : 44567475  } ,
-		{ name : 'Henan'        , data : 94023567  } ,
-		{ name : 'Hainan'       , data : 8671518   } ,
-		{ name : 'Taiwan'       , data : 23162123  } ,
-		{ name : 'Hunan'        , data : 65683722  } ,
-		{ name : 'Sichuan'      , data : 80418200  } ,
-		{ name : 'Yunnan'       , data : 45966239  } ,
-		{ name : 'Gansu'        , data : 25575254  } ,
-		{ name : 'Xizang'       , data : 3002166   } ,
-		{ name : 'Liaoning'     , data : 43746323  } ,
-		{ name : 'Jilin'        , data : 27462297  } ,
-		{ name : 'Heilongjiang' , data : 38312224  } ,
-		{ name : 'Hubei'        , data : 57237740  } ,
-		{ name : 'Shan3xi'      , data : 37327378  } ,
-		{ name : 'Neimenggu'    , data : 24706321  } ,
-		{ name : 'Guangxi'      , data : 46026629  } ,
-		{ name : 'Qinghai'      , data : 5626722   } ,
-		{ name : 'Ningxia'      , data : 6301350   } ,
-		{ name : 'Xinjiang'     , data : 21813334  } ,
-		{ name : 'Chongqing'    , data : 28846170  } ,
-		{ name : 'Shanxi'       , data : 35712111  } ,
-		{ name : 'Tianjing'     , data : 12938224  } ,
-		{ name : 'Beijing'      , data : 19612368  } ,
-		{ name : 'Guangdong'    , data : 104303132 } ,
-		{ name : 'Guizhou'      , data : 34746468  } ,
-		{ name : 'Hongkong'     , data : 7097600   } ,
-		{ name : 'Macau'        , data : 552300    } ,
-		{ name : 'Fujian'       , data : 36894216  } 
-	];
+	this._data = {};
+	this._data['model'] = {
+		 'Zhejiang'     : { data : 0 } ,
+		 'Jiangsu'      : { data : 0 } ,
+		 'Shandong'     : { data : 0 } ,
+		 'Anhui'        : { data : 0 } ,
+		 'Shanghai'     : { data : 0 } ,
+		 'Hebei'        : { data : 0 } ,
+		 'Jiangxi'      : { data : 0 } ,
+		 'Henan'        : { data : 0 } ,
+		 'Hainan'       : { data : 0 } ,
+		 'Taiwan'       : { data : 0 } ,
+		 'Hunan'        : { data : 0 } ,
+		 'Sichuan'      : { data : 0 } ,
+		 'Yunnan'       : { data : 0 } ,
+		 'Gansu'        : { data : 0 } ,
+		 'Xizang'       : { data : 0 } ,
+		 'Liaoning'     : { data : 0 } ,
+		 'Jilin'        : { data : 0 } ,
+		 'Heilongjiang' : { data : 0 } ,
+		 'Hubei'        : { data : 0 } ,
+		 'Shan3xi'      : { data : 0 } ,
+		 'Neimenggu'    : { data : 0 } ,
+		 'Guangxi'      : { data : 0 } ,
+		 'Qinghai'      : { data : 0 } ,
+		 'Ningxia'      : { data : 0 } ,
+		 'Xinjiang'     : { data : 0 } ,
+		 'Chongqing'    : { data : 0 } ,
+		 'Shanxi'       : { data : 0 } ,
+		 'Tianjing'     : { data : 0 } ,
+		 'Beijing'      : { data : 0 } ,
+		 'Guangdong'    : { data : 0 } ,
+		 'Guizhou'      : { data : 0 } ,
+		 'Hongkong'     : { data : 0 } ,
+		 'Macau'        : { data : 0 } ,
+		 'Fujian'       : { data : 0 } 
+ 	} ;
+
+	this._data['length'] = (function (obj) {
+		var i=0;
+		for (var item in obj) { i++ ;}
+		return function () { 
+			return i; 
+		};
+	})(this._data['model']);
 
 
 	/**
@@ -127,7 +136,6 @@ mm3d.ChineseMap = function (cont, config) {
 		this._option['colorModel'] = 
 			typeof config['colorModel'] === 'object' ? config['colorModel'] : this._option['colorModel'];	
 
-		this._data = typeof config['data'] === 'object' ? config['data'] : this._data;
 		this.title = typeof config['title'] === 'string' ? config['title'] : this.title;
 
 
@@ -136,13 +144,12 @@ mm3d.ChineseMap = function (cont, config) {
 		}
 	}
 
-	this._data.sort(mm3d.sortData);
-	/* calculates the max value */
-	//for (var i=0; i<this._data.length; i++) {
-	this.maxVal = this._data[0].data ; //> this.maxVal ? this._data[0].data : this.maxVal;
-	//}
+	if (dataModel !== undefined) {
+		this.changeData(dataModel);	
+		this.modelChanged = false;
+	}
 
-	this._maxbarHeight = this.maxVal > 39.125 ? 39.125 : this.maxVal;
+	this._calMax();
 
 	/* the position that camera look at */
 	this._lookAtPos = {x:0, y:0, z:0};
@@ -153,6 +160,18 @@ mm3d.ChineseMap.prototype = {
 	/**
 	 * Some utility methods.
 	 */
+	_calMax : function () {
+		for (var item in this._data['model']) {
+			this.maxVal = this._data['model'][item]['data'] > this.maxVal 
+			? this._data['model'][item]['data'] : this.maxVal;
+		}
+
+		this._maxbarHeight = this.maxVal > 39.125 ? 39.125 : this.maxVal;
+
+		if (this.maxVal === 0) {
+			this._maxbarHeight = this.maxVal = 1;
+		}
+	},
 	/**
 	 * @private
 	 * Calculate the color should be shown.
@@ -266,20 +285,21 @@ mm3d.ChineseMap.prototype = {
 		var legendContext = document.createElement('div');
 		legendContext['id'] = 'mm3dLegendCtx';
 
-		for (var i=0; i<this._data.length; i++) {
+		for (var item in this._data['model']) {
 			var legendItem = document.createElement('div');
 			legendItem['className'] = 'mm3dLegendItem';
 			var legendColor = document.createElement('span');
 			legendColor['className'] = 'mm3dLegendColor';
 			legendColor['style']['backgroundColor'] = 
-				this._calColor(this._data[i]['data']*this._maxbarHeight/this.maxVal).getContextStyle();
+				this._calColor(this._data['model'][item]['data']*this._maxbarHeight/this.maxVal).getContextStyle();
 			var legendName = document.createElement('span');
 			legendName['className'] = 'mm3dLegendName';
-			legendName.innerHTML = this._data[i]['name'];
+			legendName.innerHTML = item;
 
 			var legendValue = document.createElement('span');
 			legendValue['className'] = 'mm3dLegendValue';
-			legendValue.innerHTML = this._data[i]['data'];
+			/* TODO display name attribute should be appended */
+			legendValue.innerHTML = this._data['model'][item]['data'];
 
 			legendItem.appendChild(legendColor);
 			legendItem.appendChild(legendName);
@@ -458,6 +478,7 @@ mm3d.ChineseMap.prototype = {
 		this._renderScene = function () {
 			if (this._modelChanged) {
 				//TODO changed the model
+				this._repaintModel();
 			}
 
 			/* rotate mouse */
@@ -505,9 +526,9 @@ mm3d.ChineseMap.prototype = {
 						var thetaY = yDiff * .5 * Math.PI/ this._option.size[1];	
 						var thetaX = xDiff * .5 * Math.PI/ this._option.size[0];	
 
-						for (var i=0; i<this._data.length; i++) {
-							this._data[i]['mesh'].rotation.x += thetaY;
-							this._data[i]['mesh'].rotation.z += thetaX;
+						for (item in this._data['model']) {
+							this._data['model'][item]['mesh'].rotation.x += thetaY;
+							this._data['model'][item]['mesh'].rotation.z += thetaX;
 						}
 					}
 				}
@@ -524,28 +545,28 @@ mm3d.ChineseMap.prototype = {
 				}
 		};
 
-		for (var i=0; i<this._data.length; i++) {
-			(function(that, i) {
-				that._three.loader.load({model : 'js/map'+that._data[i]['name']+'.js',
+		/** 
+		 * as the length function calculates each time,
+		 * so declares a variable in advance.
+		 */
+		var dataLength = this._data.length();
+		console.log(dataLength);
+		for (var item in this._data['model']) {//var i=0; i<this._data.length; i++) {
+			(function(that, i, len) {
+				that._three.loader.load({model : 'js/map'+ i +'.js',
 				callback : function(geo) { 
 						that._loadedMesh.push(i);
-						var barHeight = that._data[i]['data']/that.maxVal*that._maxbarHeight;
-						that._data[i]['mesh'] = new THREE.Mesh(geo, 
-							new THREE.MeshLambertMaterial({
-									color : that._calColor(barHeight).getHex(), transparent : true}));
-						//that._data[i]['mesh'].scale.set(3, 3, 3); 
-						// that._data[i]['mesh'].rotation.x = Math.PI/2;
-						that._three.scene.add(that._data[i]['mesh']);
+						var barHeight = that._data['model'][i]['data']/that.maxVal*that._maxbarHeight;
+						that._data['model'][i]['mesh'] = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color : that._calColor(barHeight).getHex(), transparent : true}));
+						that._three.scene.add(that._data['model'][i]['mesh']);
 
 						/* set data */
-						that._data[i]['mesh'].scale.y = (1+barHeight);
-						// that._data[i]['mesh'].material.opacity = barHeight/that.maxVal;
-						//that._data[i]['mesh'].position.y = (1+barHeight)*.5*.08;
+						that._data['model'][i]['mesh'].scale.y = (1+barHeight);
 						
-						that._loadingNode.changeContent('Mesh ' + that._data[i]['name'] + ' loaded. '
-							+ (that._loadedMesh.length/that._data.length)*100 + '%'); 
+						that._loadingNode.changeContent('Mesh ' + i + ' loaded. '
+							+ (that._loadedMesh.length/len)*100 + '%'); 
 
-						if (that._loadedMesh.length >= that._data.length) {
+						if (that._loadedMesh.length >= len) {
 							console.log("loads complete.");
 							/* begin to render scene */
 							that._vp.removeChild(that._loadingNode);
@@ -554,7 +575,7 @@ mm3d.ChineseMap.prototype = {
 					} 
 				});
 
-			})(this, i);
+			})(this, item, dataLength);
 		}
 
 		/**
@@ -570,17 +591,35 @@ mm3d.ChineseMap.prototype = {
 	 * The method is invoked when data model is changed.
 	 */
 	_repaintModel : function () {
-		for (var i=0; i<this._data.length; i++) {
-			
+		for (var item in this._data['model']) {
+			var mesh = this._data['model'][item]['mesh'];
+			var newScale = this._data['model'][item]['data']/this.maxVal*this._maxbarHeight;
+			mesh.scale.y = 1 + barHeight;
+			mesh.material = new THREE.MeshLambertMaterial({
+					color : this._calColor(barHeight).getHex(),
+					transparent : true
+			});
 		}
+		this.modelChanged = false;
 	},
 
 	change : function (config) {
 
 	},
 
+	/**
+	 * Changes the data models to repaint the map.
+	 * @param model {JSON} the data model to be chaged.
+	 */
 	changeData : function (model) {
-		this._data = model;	
+		for (var item in model) {
+			for (var attr in model[item]) {
+				this._data['model'][item][attr] = model[item][attr];
+			}
+		}
+		/* recalculates the max values */
+		this._calMax();
+		this.modelChanged = true;
 	}
 };
 
