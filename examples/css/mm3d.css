@@ -2,6 +2,10 @@
  * The stylesheet for mm3d libarary.
  * @author Ye Jiabin
  */
+body {
+	margin : 0;
+	padding : 0;
+}
 
 .mm3dToolBox {
 	position : absolute;

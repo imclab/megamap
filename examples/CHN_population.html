@@ -8,24 +8,106 @@
 	<script type="text/javascript" src='js/mm3d.js'></script>
 	<script type="text/javascript">
 		(function(window) {
+		 		var mapData2010 = {
+				 'Zhejiang'     : { data : 54426891  } ,
+				 'Jiangsu'      : { data : 78659903  } ,
+				 'Shandong'     : { data : 95793065  } ,
+				 'Anhui'        : { data : 59500510  } ,
+				 'Shanghai'     : { data : 23019148  } ,
+				 'Hebei'        : { data : 71854202  } ,
+				 'Jiangxi'      : { data : 44567475  } ,
+				 'Henan'        : { data : 94023567  } ,
+				 'Hainan'       : { data : 8671518   } ,
+				 'Taiwan'       : { data : 23162123  } ,
+				 'Hunan'        : { data : 65683722  } ,
+				 'Sichuan'      : { data : 80418200  } ,
+				 'Yunnan'       : { data : 45966239  } ,
+				 'Gansu'        : { data : 25575254  } ,
+				 'Xizang'       : { data : 3002166   } ,
+				 'Liaoning'     : { data : 43746323  } ,
+				 'Jilin'        : { data : 27462297  } ,
+				 'Heilongjiang' : { data : 38312224  } ,
+				 'Hubei'        : { data : 57237740  } ,
+				 'Shaanxi'      : { data : 37327378  } ,
+				 'Neimenggu'    : { data : 24706321  } ,
+				 'Guangxi'      : { data : 46026629  } ,
+				 'Qinghai'      : { data : 5626722   } ,
+				 'Ningxia'      : { data : 6301350   } ,
+				 'Xinjiang'     : { data : 21813334  } ,
+				 'Chongqing'    : { data : 28846170  } ,
+				 'Shanxi'       : { data : 35712111  } ,
+				 'Tianjing'     : { data : 12938224  } ,
+				 'Beijing'      : { data : 19612368  } ,
+				 'Guangdong'    : { data : 104303132 } ,
+				 'Guizhou'      : { data : 34746468  } ,
+				 'Hongkong'     : { data : 7097600   } ,
+				 'Macau'        : { data : 552300    } ,
+				 'Fujian'       : { data : 36894216  } 
+				};
+				var mapData1990 = {
+				 'Zhejiang'     : { data : 41445930  } ,
+				 'Jiangsu'      : { data : 67056519  } ,
+				 'Shandong'     : { data : 84392827  } ,
+				 'Anhui'        : { data : 56180813  } ,
+				 'Shanghai'     : { data : 13341896  } ,
+				 'Hebei'        : { data : 61082439  } ,
+				 'Jiangxi'      : { data : 37710281  } ,
+				 'Henan'        : { data : 85509535  } ,
+				 'Hainan'       : { data : 6557482   } ,
+				 'Taiwan'       : { data : 20155830  } ,
+				 'Hunan'        : { data : 60659754  } ,
+				 'Sichuan'      : { data : 78351973  } ,
+				 'Yunnan'       : { data : 36972619  } ,
+				 'Gansu'        : { data : 22371141  } ,
+				 'Xizang'       : { data : 2196010   } ,
+				 'Liaoning'     : { data : 39459697  } ,
+				 'Jilin'        : { data : 24658721  } ,
+				 'Heilongjiang' : { data : 35214873  } ,
+				 'Hubei'        : { data : 53969210  } ,
+				 'Shaanxi'      : { data : 32882403  } ,
+				 'Neimenggu'    : { data : 21456798  } ,
+				 'Guangxi'      : { data : 42245765  } ,
+				 'Qinghai'      : { data : 4456946   } ,
+				 'Ningxia'      : { data : 4655451   } ,
+				 'Xinjiang'     : { data : 15155778  } ,
+				 'Chongqing'    : { data : 28866200  } ,
+				 'Shanxi'       : { data : 28759014  } ,
+				 'Tianjing'     : { data : 8785402   } ,
+				 'Beijing'      : { data : 10819407  } ,
+				 'Guangdong'    : { data : 0}, //62829236  } ,
+				 'Guizhou'      : { data : 32391066  } ,
+				 'Hongkong'     : { data : 6130000   } ,
+				 'Macau'        : { data : 6130000   } ,
+				 'Fujian'       : { data : 30097274  } };
 			window.addEventListener('load',
 				function(evt) {
-				//	try { 
-						var cMap = new mm3d.ChineseMap(
-							document.getElementById('viewport'));
-						cMap.init();
-					
+					var cMap = new mm3d.ChineseMap(
+						document.getElementById('viewport'),
+						mapData2010);
+					cMap.addEventListener('load', (function(mp) {
+						return function() {
+						cMap.changeScale(50.0);
 						cMap.setTitle("China's population status (2010)");
-				//	} catch (exc) {
-				//		console.warn('exception:' + exc.message);
-				//	}
-				}, false);
+						}; })(cMap));;
+					cMap.init();
+
+					window.addEventListener('keypress', 
+					(function(mp){
+					 return function (evt) {
+						if (evt.which == 32 /* space bar */) {
+								mp.changeData(mapData1990);
+								mp.changeScale(20.0);
+							}
+						};
+					})(cMap), false);
+			}, false);
 		})(window);
 	</script>
 </head>
 <body>
 	<div id="viewport"></div>
 
+	<!--
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -35,6 +117,7 @@ try {
 var pageTracker = _gat._getTracker("UA-28581436-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
+-->
 
 </body>
 </html>
