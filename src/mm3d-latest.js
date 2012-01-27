@@ -31,6 +31,8 @@ mm3d.PAN_LEFT = 1;
 mm3d.PAN_RIGHT = 2;
 mm3d.PAN_DOWN = 3;
 
+mm3d.ANI_SCALE_BAR = 0;
+
 mm3d.sortData = function(a, b) {
 	return - a.data + b.data;
 };
@@ -99,7 +101,7 @@ mm3d.ChineseMap = function (cont, dataModel, config) {
 		 'Jilin'        : { data : 0 } ,
 		 'Heilongjiang' : { data : 0 } ,
 		 'Hubei'        : { data : 0 } ,
-		 'Shan3xi'      : { data : 0 } ,
+		 'Shaanxi'      : { data : 0 } ,
 		 'Neimenggu'    : { data : 0 } ,
 		 'Guangxi'      : { data : 0 } ,
 		 'Qinghai'      : { data : 0 } ,
@@ -146,21 +148,42 @@ mm3d.ChineseMap = function (cont, dataModel, config) {
 
 	if (dataModel !== undefined) {
 		this.changeData(dataModel);	
-		this.modelChanged = false;
+		this._modelChanged = false;
 	}
 
 	this._calMax();
 
 	/* the position that camera look at */
 	this._lookAtPos = {x:0, y:0, z:0};
-	
+
 };
 
 mm3d.ChineseMap.prototype = {
+
+	/**
+	 * Registered listeners.
+	 */
+	_listeners : {
+		'load' : []
+	},
+
+	/**
+	 * Adds event listener to call back procedures.
+	 * @param type {String} the type of the event
+	 * @param callback {Function} the callback function when
+	 * 		  event is triggered.
+	 */
+	addEventListener : function (type, callback) {
+		this._listeners[type].push(callback);
+	},
+
+	_loadComplete : false,
+
 	/**
 	 * Some utility methods.
 	 */
 	_calMax : function () {
+		this.maxVal = 0;
 		for (var item in this._data['model']) {
 			this.maxVal = this._data['model'][item]['data'] > this.maxVal 
 			? this._data['model'][item]['data'] : this.maxVal;
@@ -328,6 +351,13 @@ mm3d.ChineseMap.prototype = {
 		}
 	},
 
+	_aniStatus : {
+		isRun : false,
+		step : 0,
+		maxStep : 100,
+		type : 0
+	},
+
 	/**
 	 * @public 
 	 * Sets the title for the map and changes the display.
@@ -401,6 +431,7 @@ mm3d.ChineseMap.prototype = {
 		 */
 		var scaleRuleContainer = divNode.cloneNode(true);
 		applyConfig(scaleRuleContainer, {id: 'mm3dScaleRuleCont'}); 
+		this._scaleRule = scaleRuleContainer;
 
 		var scaleRule = divNode.cloneNode(true);
 		var scaleRuleWidth = this._option['size'][0]/3.9;
@@ -476,23 +507,26 @@ mm3d.ChineseMap.prototype = {
 		 * Rendering scene procedure.
 		 */
 		this._renderScene = function () {
-			if (this._modelChanged) {
+			if (this._aniStatus.isRun) {
+				var st = this._aniStatus;
+				this._aniStatus.step += 1;
+				if (st.step >= st.maxStep) {
+					st.step = 0;
+					this._aniStatus.isRun = false;
+				} else {
+					this._animator();
+				}
+			} else if (this._modelChanged) {
 				//TODO changed the model
 				this._repaintModel();
-			}
+				this._maxTag.innerHTML = this.maxVal;
+			} 
 
 			/* rotate mouse */
 			if (mm3d.mouseState.down ) {
 				if (mm3d.mouseState['pan'] !== 0) {
 					/* pan the camera */
 					var delta = .05;
-					/*
-					var deltaVector = {
-						x : this._lookAtPos.x - this._three.camera.position.x,
-						y : this._lookAtPos.y - this._three.camera.position.y,
-						z : this._lookAtPos.z - this._three.camera.position.z
-					};
-					*/
 					switch (mm3d.mouseState['pan']) {
 					case mm3d.PAN_TOP:
 						this._three.camera.position.z -= delta;
@@ -550,7 +584,6 @@ mm3d.ChineseMap.prototype = {
 		 * so declares a variable in advance.
 		 */
 		var dataLength = this._data.length();
-		console.log(dataLength);
 		for (var item in this._data['model']) {//var i=0; i<this._data.length; i++) {
 			(function(that, i, len) {
 				that._three.loader.load({model : 'js/map'+ i +'.js',
@@ -568,8 +601,13 @@ mm3d.ChineseMap.prototype = {
 
 						if (that._loadedMesh.length >= len) {
 							console.log("loads complete.");
-							/* begin to render scene */
+							/* trigger all listeners */
+							for (var j=0; j<that._listeners['load'].length; j++) {
+								that._listeners['load'][j].call();
+							}
+							that._loadComplete = true;
 							that._vp.removeChild(that._loadingNode);
+							/* begin to render scene */
 							that._mainloop(that)();
 						}
 					} 
@@ -583,7 +621,6 @@ mm3d.ChineseMap.prototype = {
 		 */
 		this._three.renderer.domElement['id'] = 'mm3dViewport';
 		this._vp.appendChild(this._three.renderer.domElement);
-
 	},
 
 	/**
@@ -594,13 +631,26 @@ mm3d.ChineseMap.prototype = {
 		for (var item in this._data['model']) {
 			var mesh = this._data['model'][item]['mesh'];
 			var newScale = this._data['model'][item]['data']/this.maxVal*this._maxbarHeight;
-			mesh.scale.y = 1 + barHeight;
+			mesh.scale.y = 1 + newScale;
 			mesh.material = new THREE.MeshLambertMaterial({
-					color : this._calColor(barHeight).getHex(),
+					color : this._calColor(newScale).getHex(),
 					transparent : true
 			});
 		}
-		this.modelChanged = false;
+		this._modelChanged = false;
+	},
+
+	
+	_animator : /* scales the mesh */ function() {
+		if (this._loadComplete) {
+			for (var item in this._data['model']) {
+				var newScale = this._data['model'][item]['data']/this.maxVal*this._maxbarHeight;
+				newScale *= this._aniStatus.step/this._aniStatus.maxStep;
+				var obj = this._data['model'][item];
+				console.log(obj);
+				obj['mesh'].scale.y = 1+newScale;
+			}
+		}
 	},
 
 	change : function (config) {
@@ -619,7 +669,37 @@ mm3d.ChineseMap.prototype = {
 		}
 		/* recalculates the max values */
 		this._calMax();
-		this.modelChanged = true;
+		this._modelChanged = true;
+	},
+
+	/**
+	 * Changes the scale of bar.
+	 * @param maxHeight {Number} the maximum height 
+	 * 					of the bar rendered in the scene.
+	 * @param animate {Boolean} true if has animate effect
+	 * @param step {Number} total animate steps, one frame per step
+	 * 			   Default value is 100.
+	 * @return true if the scale is successfully changed otherwise
+	 *         false if previous animation does not stop.
+	 */
+	changeScale : function (maxHeight, animate, step) {
+		this._maxbarHeight = maxHeight;
+		if (!this._loadComplete) {
+			return false;
+		}
+		if (!this._aniStatus.isRun) {
+			if (animate === undefined || animate === false) {
+				this._aniStatus.step = this._aniStatus.maxStep = 100;
+				this._animator();
+			} else {
+				this._aniStatus.isRun = true;
+				this._aniStatus.step = 0;
+				this._aniStatus.maxStep = typeof step === 'number' ? step : 100;
+				this._animator();
+			}
+			return true;
+		}
+		return false;
 	}
 };
 
