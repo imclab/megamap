@@ -86,7 +86,7 @@ body {
 
 #mm3dLegend {
 	display  : block;
-	overflow : scroll;
+	overflow : scroll; 
 }
 
 #mm3dCamContainer {
@@ -117,6 +117,8 @@ body {
 }
 
 #mm3dLegendCtx {
+	left : 0;
+	top : 0;
 }
 
 .mm3dLegendItem {

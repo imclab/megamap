@@ -83,23 +83,23 @@
 				function(evt) {
 					var cMap = new mm3d.ChineseMap(
 						document.getElementById('viewport'),
-						mapData2010);
+						mapData2010, {'animate' : true});
 					cMap.addEventListener('load', (function(mp) {
 						return function() {
-						cMap.changeScale(50.0);
+						//cMap.changeScale(50.0);
 						cMap.setTitle("China's population status (2010)");
 						}; })(cMap));;
 					cMap.init();
-
-					window.addEventListener('keypress', 
-					(function(mp){
-					 return function (evt) {
-						if (evt.which == 32 /* space bar */) {
-								mp.changeData(mapData1990);
-								mp.changeScale(20.0);
-							}
-						};
-					})(cMap), false);
+					// window.addEventListener('keypress', 
+					// (function(mp){
+					//  return function (evt) {
+					// 	if (evt.which == 32 /* space bar */) {
+					// 			mp.setTitle("China's population status (1990)");
+					// 			mp.changeData(mapData1990, 0);
+					// 			//mp.changeScale(20.0);
+					// 		}
+					// 	};
+					// })(cMap), false);
 			}, false);
 		})(window);
 	</script>
