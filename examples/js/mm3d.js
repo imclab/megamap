@@ -38,6 +38,8 @@ mm3d.sortData = function(a, b) {
 };
 
 mm3d.mouseState = { down : false,
+	keyDown : false,
+	zoomIn : true,
 	pan : 0,
 	last : {x : 0, y : 0}, 
 	cur : {x : 0, y : 0} 
@@ -401,6 +403,23 @@ mm3d.ChineseMap.prototype = {
 			mm3d.mouseState.cur  = { x : e.clientX, y : e.clientY };
 			//console.log(mm3d.mouseState);
 		}, false);
+		window.addEventListener('keydown', function(e) {
+			switch (e.which) {
+				case 65: /* 'A' */
+					mm3d.mouseState.keyDown = true;
+					mm3d.mouseState.zoomIn = true;
+					break;
+				case 90: /* 'Z' */
+					mm3d.mouseState.keyDown = true;
+					mm3d.mouseState.zoomIn = false;
+					break;
+				default:
+					break;
+			}
+		}, false);
+		window.addEventListener('keyup', function(e) {
+			mm3d.mouseState.keyDown = false;
+		}, false);
 
 		/**
 		 * The toolBox at the right-top corner.
@@ -566,6 +585,30 @@ mm3d.ChineseMap.prototype = {
 						}
 					}
 				}
+			} else if (mm3d.mouseState.keyDown) {
+				console.log('asfd');
+				var camPos = this._three['camera'].position;
+				var diffVec = {x: this._lookAtPos.x - camPos.x,
+					y: this._lookAtPos.y - camPos.y,
+					z: this._lookAtPos.z - camPos.z};
+				var zoomStep = .005;
+				if (mm3d.mouseState.zoomIn) {
+					camPos.x += diffVec.x*zoomStep;
+					camPos.y += diffVec.y*zoomStep;
+					camPos.z += diffVec.z*zoomStep;
+					this._lookAtPos.x += diffVec.x*zoomStep;
+					this._lookAtPos.y += diffVec.y*zoomStep;
+					this._lookAtPos.z += diffVec.z*zoomStep;
+				} else {
+					camPos.x -= diffVec.x*zoomStep;
+					camPos.y -= diffVec.y*zoomStep;
+					camPos.z -= diffVec.z*zoomStep;
+					this._lookAtPos.x -= diffVec.x*zoomStep;
+					this._lookAtPos.y -= diffVec.y*zoomStep;
+					this._lookAtPos.z -= diffVec.z*zoomStep;
+				}
+				this._three['camera'].position = camPos;
+				this._three['camera'].lookAt(this._lookAtPos);
 			}
 
 			this._three.renderer.render(this._three.scene,
@@ -601,11 +644,11 @@ mm3d.ChineseMap.prototype = {
 
 						if (that._loadedMesh.length >= len) {
 							console.log("loads complete.");
+							that._loadComplete = true;
 							/* trigger all listeners */
 							for (var j=0; j<that._listeners['load'].length; j++) {
 								that._listeners['load'][j].call();
 							}
-							that._loadComplete = true;
 							that._vp.removeChild(that._loadingNode);
 							/* begin to render scene */
 							that._mainloop(that)();
@@ -647,7 +690,6 @@ mm3d.ChineseMap.prototype = {
 				var newScale = this._data['model'][item]['data']/this.maxVal*this._maxbarHeight;
 				newScale *= this._aniStatus.step/this._aniStatus.maxStep;
 				var obj = this._data['model'][item];
-				console.log(obj);
 				obj['mesh'].scale.y = 1+newScale;
 			}
 		}
