@@ -7,7 +7,7 @@ body {
 	padding : 0;
 }
 
-.mm3dToolBox {
+.mm3dToolbox {
 	position : absolute;
 	display  : block;
 	float    : right;
@@ -23,7 +23,7 @@ body {
 	text-shadow : 0 0 1.5em #fff;
 }
 
-#mm3dTitle {
+.mm3dTitle {
 	color          : #eee              ;
 	width          : 70%               ;
 	font-size      : 1.2em             ;
@@ -74,7 +74,7 @@ body {
 	z-index : 1;
 }
 
-#mm3dLegendContainer {
+.mm3dLegendContainer {
 	position : absolute;
 	display  : block;
 	z-index : 200;
@@ -89,14 +89,14 @@ body {
 	overflow : scroll; 
 }
 
-#mm3dCamContainer {
+.mm3dCamContainer {
 	position : absolute;
 	z-index  : 200;
 	left     : 12px;
 	top      : 12px;
 }
 
-#mm3dCamContainer > .mm3dCamButton {
+.mm3dCamContainer > .mm3dCamButton {
 	display : block;
 	cursor : pointer;
 	position : absolute;
@@ -109,7 +109,7 @@ body {
 	-o-transform : rotate(45deg);
 }
 
-#mm3dCamContainer > .mm3dCamButton:hover {
+.mm3dCamContainer > .mm3dCamButton:hover {
 	background-color : rgba(188, 188, 188, 1);
 }
 
@@ -154,7 +154,7 @@ body {
 	
 }
 
-#mm3dScaleRuleCont {
+.mm3dScaleRuleCont {
 	position : absolute;
 	display  : block;
 	z-index : 200;
@@ -165,7 +165,7 @@ body {
 	text-shadow : 0 0 10px #ffc;
 }
 
-#mm3dScaleRule {
+.mm3dScaleRule {
 	display : block;
 	box-shadow : 0 0 10px #ffc;
 }
