@@ -6,6 +6,18 @@
 
 var mm3d = mm3d || {};
 
+mm3d.NO_TRANSFORM = 0;
+mm3d.PAN_LEFT     = 1;
+mm3d.PAN_RIGHT    = 2;
+mm3d.PAN_TOP      = 3;
+mm3d.PAN_DOWN     = 4;
+
+mm3d.ROTATE_X     = 5;
+mm3d.ROTATE_Y     = 6;
+
+mm3d.ZOOM_IN      = 7;
+mm3d.ZOOM_OUT     = 8;
+
 /**
  * The constructor the widget.
  */
@@ -118,6 +130,7 @@ mm3d.WgScalerule = function (size) {
 		g.addColorStop(1, maxColor);
 		this._ctx.fillStyle = g;
 		this._ctx.fillRect(0, 0, this._size[0], this._size[1]);
+		return this;
 	};
 
 	this.repaint('#f00', '#ff0');
@@ -127,27 +140,26 @@ mm3d.WgScalerule = function (size) {
 		.add(this._min).add(this._max).add(srCav);
 };
 
-mm3d.WgScalerule.methods ( {
-	max : function (n) {
-		if (n === undefined) {
-			return this._max.html();
-		} else {
-			this._max.html(n);
-			return this;
-		}
-	},
-
-	min : function (n) {
-		if (n === undefined) {
-			return this._min.html();
-		} else {
-			this._min.html(n);
-			return this;
-		}
-	}
-});
-
 mm3d.WgScalerule.prototype = new mm3d.Widget();
+
+mm3d.WgScalerule.prototype.max = function (n) {
+	if (n === undefined) {
+		return this._max.html();
+	} else {
+		this._max.html(n);
+		return this;
+	}
+};
+
+mm3d.WgScalerule.prototype.min = function (n) {
+	if (n === undefined) {
+		return this._min.html();
+	} else {
+		this._min.html(n);
+		return this;
+	}
+};
+
 mm3d.WgScalerule.prototype.constructor = mm3d.WgScalerule;
 
 mm3d.WgLegend = function () {
@@ -160,7 +172,11 @@ mm3d.WgLegend = function () {
 mm3d.WgLegend.prototype = new mm3d.Widget();
 mm3d.WgLegend.prototype.constructor = mm3d.WgLegend;
 
-mm3d.WgCamCtrl = function () {
+/**
+ * The camera control widget.
+ * @param map3D a reference of map3D instance.
+ */
+mm3d.WgCamCtrl = function (map3D) {
 	this.base = mm3d.Util.div()
 		.attr({'className':'mm3dCamContainer'});
 	var r = 18, sqrt2 = Math.sqrt(2);

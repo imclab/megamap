@@ -7,12 +7,16 @@
 mm3d.Map3D = function(dataModel, colorModel, config) {
 	this._dataModel = dataModel;
 	this._colorModel = colorModel;
+	this._maxBarHeight = 50;
 
 	if (config !== undefined) {
 		this._size = config['size'] === undefined ? 
 		[window.innerWidth, window.innerHeight] : config['size'];
 		this._urlPrefix = typeof config['urlPrefix'] === 'string' ?
 		config['urlPrefix'] : 'map';
+		if (config['maxBarHeight'] !== undefined) {
+			this._maxBarHeight = config['maxBarHeight'];
+		}
 	} else {
 		this._size = [window.innerWidth, window.innerHeight];
 		this._urlPrefix = 'map';
@@ -61,14 +65,26 @@ mm3d.Map3D.prototype = {
 		return this._renderer.domElement;
 	},
 
-	repaint : function () {
+	repaint : function (scale, color) {
+		/* repaint scale ? */
+		var _s = scale === undefined ? true : scale;
+		/* repaint color ? */
+		var _c = color === undefined ? true : color;
+		var max = this._dataModel.max, min = this._dataModel.min;
+		if (max - min === 0) { _s = false; }
+
 		for (var item in this._dataModel.model) {
-			this._dataModel.model[item]['mesh'].material
-			 = new THREE.MeshLambertMaterial({
-				 color : this._colorModel.getColor(item).getHex(),
-				 transparent : true
-			 });
-			this._dataModel.model[item]['mesh'].scale.y = 3;
+			if (_c) {
+				this._dataModel.model[item]['mesh'].material
+			 		= new THREE.MeshLambertMaterial({
+				 		color : this._colorModel.getColor(item).getHex(),
+				 		transparent : true});
+			}
+			if (_s) { 
+				this._dataModel.model[item]['mesh'].scale.y 
+					= 1 + this._maxBarHeight*
+						this._dataModel.model[item]['data']/(max - min);
+			}
 		}
 	},
 
@@ -124,20 +140,32 @@ new THREE.MeshLambertMaterial({color : 0xff0000}));
 		this._camera.lookAt(this._lookAt);
 	},
 
-	zoom : function (isZoomIn, step) {
+	zoom : function (step) {
+		console.log('zooming');
 		var camPos = this._camera.position;
 		var diffVec = {x: this._lookAt.x - camPos.x,
 			y: this._lookAt.y - camPos.y,
 			z: this._lookAt.z - camPos.z};
-		var sign = isZoomIn ? 1 : -1;
-		camPos.x += sign*diffVec.x*step;
-		camPos.y += sign*diffVec.y*step;
-		camPos.z += sign*diffVec.z*step;
-		this._lookAt.x += sign*diffVec.x*step;
-		this._lookAt.y += sign*diffVec.y*step;
-		this._lookAt.z += sign*diffVec.z*step;
+		camPos.x += diffVec.x*step;
+		camPos.y += diffVec.y*step;
+		camPos.z += diffVec.z*step;
+		this._lookAt.x += diffVec.x*step;
+		this._lookAt.y += diffVec.y*step;
+		this._lookAt.z += diffVec.z*step;
 		this._camera.position = camPos;
 		this._camera.lookAt = this._lookAt;
+	},
+
+	rotate : function (type, delta) {
+		if (type === mm3d.ROTATE_X) {
+			for (var item in this._dataModel['model']) {
+				this._dataModel.model[item]['mesh'].x += delta;
+			}
+		} else if (type === mm3d.ROTATE_Y) {
+			for (var item in this._dataModel['model']) {
+				this._dataModel.model[item]['mesh'].z += delta;
+			}
+		}
 	},
 
 	render : function () {
