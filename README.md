@@ -12,16 +12,34 @@ Usage :
 mm3d-latest.js, mm3d.css and all meshes file(i.e. mapXxx.js) is required for the program.  
 The library is currently not completed.  
 The following code shows the basic usage, and the full
-API reference is also not avaliable until the completion of code work.
+API reference is also not avaliable until the completion of code work.  
+
+Include both js and css files in your html header.
+
+```html
+<!-- Three.js (r47) is required in megamap library -->
+<script type='text/javascript' src='Three.js'></script>
+<!-- This is our megamap library -->
+<script type='text/javascript' src='mm3d.min.js'></script>
+<!-- Do not forget to include corresponding map file, 
+	 take China map for example -->
+<script type='text/javascript' src='mm3d.chn.js'></script>
+
+<link rel='stylesheet' type='text/css' href='mm3d.css'>
+
+```
+
+And initialize the map as following.
 
 ```javascript
 
-/* currently, only ChineseMap is available */
-var map = mm3d.ChineseMap(document.getElementById('viewport'),
+var map = mm3d.ChinaMap(document.getElementById('viewport'),
 						  mapData, {'animation':false})
 map.init();
 
 ```
+
+* * *
 
 Current examples :
 ----------------
