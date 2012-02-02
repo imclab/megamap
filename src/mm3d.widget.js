@@ -49,7 +49,9 @@ mm3d.WgLoading = function (size) {
 	mm3d.Widget.call(this);
 
 	var title = mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'}).html('LOADING...');
-	this.base = mm3d.Util.div().attr({'className' : 'mm3dLoading'}).w(size[0]).h(size[1]).css({'top':(size[1] - parseInt(title.clientHeight))*.5 + 'px'});
+	this.base = mm3d.Util.div().attr({'className' : 'mm3dLoading'})
+	.w(size[0]).h(size[1])
+	.css({'top':(size[1] - parseInt(title.get().clientHeight))*.5 + 'px'});
 //	mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'}).html('LOADING...');
 	this._content = mm3d.Util.div().attr({'className' : 'mm3dLoadingContent'});
 	this.base.add(title).add(this._content);
@@ -96,19 +98,17 @@ mm3d.WgTitle = function (txt) {
 		.attr({'className' : 'mm3dTitle'});
 };
 
-mm3d.WgTitle.prototype = {
-	/**
-	 * Sets new content text for loading node.
-	 * @param txt new content text
-	 * @return 'this' object
-	 */
-	content : function(txt) {
+mm3d.WgTitle.prototype = new mm3d.Widget();
+/**
+ * Sets new content text for loading node.
+ * @param txt new content text
+ * @return 'this' object
+ */
+mm3d.WgTitle.prototype.content = function(txt) {
 		this.base.html(txt);
 		return this;
-	}
 };
 
-mm3d.WgTitle.prototype = new mm3d.Widget();
 mm3d.WgTitle.prototype.constructor = mm3d.WgTitle;
 
 mm3d.WgScalerule = function (size) {

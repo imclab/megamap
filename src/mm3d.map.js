@@ -147,7 +147,9 @@ new THREE.MeshLambertMaterial({color : 0xff0000}));
 	}, 
 
 	pan: function (type, delta) {
-			console.log(mm3d.PAN_LEFT, type);
+		if (typeof delta !== 'number') {
+			return;
+		}
 		switch (type) {
 		case mm3d.PAN_TOP:
 			this._camera.position.z -= delta;

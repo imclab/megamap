@@ -99,7 +99,6 @@ mm3d.AbstractMap.prototype = {
 	_initCamCtrl : function () {
 		var cam = this._widgets[mm3d.WIDGET_CAMCTRL];
 		for (var sign in cam.bts) {
-			console.log(cam.bts[sign]);
 			cam.bts[sign].get().addEventListener('mousedown', (function(that, _s){
 				return function() {
 					that._transform.type = parseInt(_s);
@@ -113,6 +112,16 @@ mm3d.AbstractMap.prototype = {
 				}
 			})(this), false);
 		};
+	},
+
+	title : function (newTitle) {
+		if (newTitle === undefined) {
+			return this._title;
+		} else {
+			this._title = newTitle;
+			this._widgets[mm3d.WIDGET_TITLE].content(newTitle);
+			return this;
+		}
 	},
 
 	_renderScene : function () {
@@ -145,7 +154,6 @@ mm3d.AbstractMap.prototype = {
 				this._ani.isRun = false;
 				this._ani.cur = 0;
 			} 
-			console.log('animate', this._ani);
 		}
 		this._map3D.render();
 	},
@@ -182,6 +190,8 @@ mm3d.AbstractMap.prototype = {
 	addEventListener : function (type, callback) {
 		this._listeners[type].push(callback);
 	},
+
+	
 
 	init : function () {
 		/* intialize widgets */
