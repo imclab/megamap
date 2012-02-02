@@ -40,7 +40,8 @@ body {
 	z-index        : 199               ;
 }
 
-#mm3dLoading {
+.mm3dLoading {
+	display : block;
 	position : absolute;
 	left :  0;
 	right : 0;
@@ -48,8 +49,7 @@ body {
 	z-index : 198;
 }
 
-#mm3dLoading  > div {
-	position : absolute;
+.mm3dLoading  > div {
 	width    : 80%;
 	margin-left : 10%;
 	margin-right: 10%;
@@ -73,10 +73,6 @@ body {
 	position : absolute;
 	right : 0;
 	top   : 0;
-}
-
-#mm3dViewport {
-	z-index : 1;
 }
 
 .mm3dLegendContainer {
