@@ -71,14 +71,20 @@ mm3d.WgLoading.prototype.constructor = mm3d.WgLoading;
 
 mm3d.WgToolbox = function () {
 	var opt = new mm3d.Util.span().html('option')
-		.attr({'className' : 'mm3dMenuItem'})
+		.attr({'className' : 'mm3dMenuItem'});
 	var hlp = new mm3d.Util.span().html('help')
-		.attr({'className' : 'mm3dMenuItem'})
+		.attr({'className' : 'mm3dMenuItem'});
 	var exp = new mm3d.Util.span().html('export')
-		.attr({'className' : 'mm3dMenuItem'})
+		.attr({'className' : 'mm3dMenuItem'});
+	var menuBox = new mm3d.Util.div().attr({'className' : 'mm3dMenuBox'});
+	this.exp2jpeg = new mm3d.Util.div().html('export2jpeg')
+		.attr({'className' : 'mm3dBoxItem'});
+	this.exp2png = new mm3d.Util.div().html('export2png')
+		.attr({'className' : 'mm3dBoxItem'});
 	this.base = new mm3d.Util.div()
 		.attr({'className' : 'mm3dToolbox'})
-		.add(exp).add(opt).add(hlp);
+		.add(exp.add(menuBox.add(this.exp2jpeg).add(this.exp2png)))
+		.add(opt).add(hlp)
 };
 
 mm3d.WgToolbox.prototype = new mm3d.Widget();

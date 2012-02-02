@@ -65,6 +65,35 @@ mm3d.Map3D.prototype = {
 		return this._renderer.domElement;
 	},
 
+	/**
+	 * Calls for animation.
+	 * @param cur the current step of animation
+	 * @param _max total steps of the animation
+	 * @return false if the animation do not complete,
+	 *         otherwise true
+	 */
+	aniScale : function(cur, _max) {
+		var ratio = cur/_max;
+		var max = this._dataModel.max, min = this._dataModel.min;
+		for (var item in this._dataModel.model) {
+			var ele = this._dataModel.model[item];
+			var newScale = 1 + this._maxBarHeight*ratio*
+				ele['data']/(max - min);
+			var diff = newScale - ele['last'];
+			ele['mesh'].scale.y = ele['last'] + diff*ratio;
+		}
+		if (cur >= _max) {
+			for (var item in this._dataModel.model) {
+				this._dataModel.model[item]['last'] = 
+					1 + this._maxBarHeight*
+				this._dataModel.model[item]['data']/(max - min);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	},
+
 	repaint : function (scale, color) {
 		/* repaint scale ? */
 		var _s = scale === undefined ? true : scale;
@@ -81,9 +110,10 @@ mm3d.Map3D.prototype = {
 				 		transparent : true});
 			}
 			if (_s) { 
-				this._dataModel.model[item]['mesh'].scale.y 
-					= 1 + this._maxBarHeight*
+				var newScale = 1 + this._maxBarHeight*
 						this._dataModel.model[item]['data']/(max - min);
+				this._dataModel.model[item]['mesh'].scale.y = newScale;
+				this._dataModel.model[item]['last'] = newScale;
 			}
 		}
 	},

@@ -183,3 +183,35 @@ body {
 	text-shadow : 0 0 1em #ffc;
 }
 
+.mm3dMenuItem:hover > .mm3dMenuBox {
+	display : block;
+}
+
+.mm3dMenuBox {
+	display : none;
+	float : left;
+	position : absolute;
+	border-style : solid;
+	border-width : 3px;
+	border-color : #888;
+	border-radius : 3px;
+	padding : 5px;
+}
+
+.mm3dMenuBox:hover {
+	display : block;
+}
+
+.mm3dMenuBox > .mm3dBoxItem {
+	/* position : absolute; */
+	font-weight : normal;
+	cursor : pointer;
+	font-size : .8em;
+	text-shadow : none;
+	padding : 4px 5px;
+	color : #FFF;
+}
+
+.mm3dMenuBox > .mm3dBoxItem:hover {
+	background-color : rgba(255, 255, 0, .2);
+}

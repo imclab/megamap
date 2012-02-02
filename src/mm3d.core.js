@@ -24,12 +24,19 @@ mm3d.AbstractMap = function(cont, data, config) {
 };
 
 mm3d.AbstractMap.prototype = {
+	/** 
+	 * Parse the configuration object 
+	 * @param config the configuration object passed from the
+	 * 				 constructor.
+	 */
 	_initConfig : function (config) {
 		/* default values */
 		this._colorModel = new mm3d.ColorLG(this._dataModel,
 					new THREE.Color(0xffff00), new THREE.Color(0xff0000));
 		this._size = [window.innerWidth, window.innerHeight];
 		this._title = '';
+		/* animation status */
+		this._ani = {isRun : false, cur: 0, max: 100};
 		if (config !== undefined) {
 			if (config['colorModel'] !== undefined) {
 			this._colorModel = new mm3d.ColorLG(this._dataModel,
@@ -41,6 +48,12 @@ mm3d.AbstractMap.prototype = {
 			}
 			if (config['title'] !== undefined) {
 				this._title = config['title'];
+			}
+			if (config['animation'] !== undefined && config['animation']) {
+				this._ani.isRun = true;
+			}
+			if (config['animationStep'] !== undefined) {
+				this._ani.max = config['animationStep'];
 			}
 		}
 
@@ -66,6 +79,18 @@ mm3d.AbstractMap.prototype = {
 			requestAnimationFrame(that._mainloop(that));
 			that._renderScene();
 		}
+	},
+
+	_export : function (that, type) {
+		return function () {
+			window.open(that._mapDOM.toDataURL(type));
+		}
+	},
+
+	_initToolbox : function () {
+		var toolbox = this._widgets[mm3d.WIDGET_TOOLBOX];
+		toolbox.exp2jpeg.evt('click', this._export(this, 'image/jpeg'));
+		toolbox.exp2png.evt('click', this._export(this, 'image/png'));
 	},
 
 	/**
@@ -111,6 +136,16 @@ mm3d.AbstractMap.prototype = {
 				break;
 			default:
 				break;
+		}
+
+		/* if animates ? */
+		if (this._ani.isRun) {
+			this._ani.cur += 1;
+			if(this._map3D.aniScale(this._ani.cur, this._ani.max)) {
+				this._ani.isRun = false;
+				this._ani.cur = 0;
+			} 
+			console.log('animate', this._ani);
 		}
 		this._map3D.render();
 	},
@@ -198,12 +233,13 @@ mm3d.AbstractMap.prototype = {
 				that._mapDOM['className'] = 'mm3dMap';
 				that._vp.removeChild(that._loading.getDOM());
 				that._vp.appendChild(that._mapDOM);
-				that._map3D.repaint();
+				that._map3D.repaint(!that._ani.isRun, true);
 				that._mainloop(that)();
 				that._mapDOM.addEventListener('mouseup', that._noTransform(that), false);
 				that._mapDOM.addEventListener('mousedown', (function(ythat){
 					return function(){ ythat._transform.type = mm3d.ROTATE;  }})(that), false); 
 				that._initCamCtrl();
+				that._initToolbox();
 			};
 		}(this)));
 
