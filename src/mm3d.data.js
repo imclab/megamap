@@ -42,7 +42,7 @@ mm3d.BaseData.prototype = {
 			// TODO integrity check
 			this.model[item]['data'] = newData[item]['data'];
 		}
-	},
+	}
 
 };
 
