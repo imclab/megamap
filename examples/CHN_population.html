@@ -5,7 +5,8 @@
 	<title>Chinese Map</title>
 	<link rel='stylesheet' type='text/css' href='css/mm3d.css'>
 	<script type="text/javascript" src='js/Three.js'></script>
-	<script type="text/javascript" src='js/res2.js'></script>
+	<script type="text/javascript" src='js/mm3d.min.js'></script>
+	<script type="text/javascript" src='js/mm3d.chn.js'></script>
 	<script type="text/javascript">
 		(function(window) {
 		 		var mapData2010 = {
@@ -81,26 +82,11 @@
 				 'Fujian'       : { data : 30097274  } };
 			window.addEventListener('load',
 				function(evt) {
-					var cMap = new mm3d.ChineseMap(
+					var cMap = new mm3d.ChinaMap(
 						document.getElementById('viewport'),
-						mapData2010, {'animate' : true});
-					cMap.addEventListener('load', (function(mp) {
-						return function() {
-						//cMap.changeScale(50.0);
-						cMap.setTitle("China's population status (2010)");
-						}; })(cMap));;
+						mapData2010, {'urlPrefix':'map/China/map', 'animate' : true});
 					cMap.init();
-					// window.addEventListener('keypress', 
-					// (function(mp){
-					//  return function (evt) {
-					// 	if (evt.which == 32 /* space bar */) {
-					// 			mp.setTitle("China's population status (1990)");
-					// 			mp.changeData(mapData1990, 0);
-					// 			//mp.changeScale(20.0);
-					// 		}
-					// 	};
-					// })(cMap), false);
-			}, false);
+					}, false);
 		})(window);
 	</script>
 </head>
