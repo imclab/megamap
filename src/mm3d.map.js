@@ -116,7 +116,8 @@ new THREE.MeshLambertMaterial({color : 0xff0000}));
 		}
 	}, 
 
-	panCamera : function (type, delta) {
+	pan: function (type, delta) {
+			console.log(mm3d.PAN_LEFT, type);
 		switch (type) {
 		case mm3d.PAN_TOP:
 			this._camera.position.z -= delta;
@@ -156,15 +157,10 @@ new THREE.MeshLambertMaterial({color : 0xff0000}));
 		this._camera.lookAt = this._lookAt;
 	},
 
-	rotate : function (type, delta) {
-		if (type === mm3d.ROTATE_X) {
-			for (var item in this._dataModel['model']) {
-				this._dataModel.model[item]['mesh'].x += delta;
-			}
-		} else if (type === mm3d.ROTATE_Y) {
-			for (var item in this._dataModel['model']) {
-				this._dataModel.model[item]['mesh'].z += delta;
-			}
+	rotate : function (delta) {
+		for (var item in this._dataModel['model']) {
+			this._dataModel.model[item]['mesh'].rotation.x += delta.x;
+			this._dataModel.model[item]['mesh'].rotation.z += delta.y;
 		}
 	},
 

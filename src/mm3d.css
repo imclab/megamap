@@ -89,7 +89,7 @@ body {
 	margin-left : 10px;
 }
 
-#mm3dLegend {
+.mm3dLegend {
 	display  : block;
 	overflow : scroll; 
 }

@@ -12,8 +12,7 @@ mm3d.PAN_RIGHT    = 2;
 mm3d.PAN_TOP      = 3;
 mm3d.PAN_DOWN     = 4;
 
-mm3d.ROTATE_X     = 5;
-mm3d.ROTATE_Y     = 6;
+mm3d.ROTATE       = 5;
 
 mm3d.ZOOM_IN      = 7;
 mm3d.ZOOM_OUT     = 8;
@@ -162,14 +161,38 @@ mm3d.WgScalerule.prototype.min = function (n) {
 
 mm3d.WgScalerule.prototype.constructor = mm3d.WgScalerule;
 
-mm3d.WgLegend = function () {
+/**
+ * The legend widget.
+ * @param size the size of the outer map container.
+ */
+mm3d.WgLegend = function (size) {
 	this.base = new mm3d.Util.div()
 		.attr({'className' : 'mm3dLegendContainer'});
 	this._ctx = new mm3d.Util.div()
 		.attr({'className' : 'mm3dLegendCtx'});
+	this._node = new mm3d.Util.div()
+		.attr({'className' : 'mm3dLegend'}).h(size[1]/3);
+	this.base.add(this._node.add(this._ctx));
 };
 
 mm3d.WgLegend.prototype = new mm3d.Widget();
+mm3d.WgLegend.prototype.repaint = function (dataModel, colorModel) {
+	var ctx = this._ctx.get();
+	/* remove all its children */
+	for (;ctx.firstChild;) { ctx.removeChild(ctx.firstChild); }
+
+	for (var item in dataModel.model) {
+		var legendItem = new mm3d.Util.div().attr({'className':'mm3dLegendItem'})
+		.add(new mm3d.Util.span().attr({'className':'mm3dLegendColor'})
+			 .css({'backgroundColor':colorModel.getColor(item).getContextStyle()}))
+		.add(new mm3d.Util.span().attr({'className':'mm3dLegendName'})
+			 .html(item))
+		.add(new mm3d.Util.span().attr({'className':'mm3dLegendValue'})
+			 .html(dataModel.model[item]['data']));
+		this._ctx.add(legendItem);
+	}
+};
+
 mm3d.WgLegend.prototype.constructor = mm3d.WgLegend;
 
 /**
@@ -186,13 +209,14 @@ mm3d.WgCamCtrl = function (map3D) {
 		{pos : [3*sqrt2-1, 2*sqrt2-1], sign : mm3d.PAN_RIGHT},
 		{pos : [2*sqrt2-1, 3*sqrt2-1], sign : mm3d.PAN_DOWN}
 	];
+	/* pan buttons */
+	this.bts = {};
 
 	for (var i=0; i<cfg.length; i++) {
-		this.base.add(
-			mm3d.Util.div().attr({'className':'mm3dCamButton'})
+		this.bts[cfg[i]['sign']] = mm3d.Util.div().attr({'className':'mm3dCamButton'})
 			.css({'left': r*cfg[i]['pos'][0] + 'px',
-				 'top': r*cfg[i]['pos'][1] + 'px'})
-		);
+				 'top': r*cfg[i]['pos'][1] + 'px'});
+		this.base.add(this.bts[cfg[i]['sign']]);
 	}
 }
 

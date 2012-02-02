@@ -3,15 +3,6 @@
  * @author Ye Jiabin <alpha360x@gmail.com>
  */
 
-if (Function.prototype.methods === undefined) {
-	Function.prototype.methods = function (fns) {
-		// No security guarantee
-		for (var fn in fns) {
-			this.prototype[fn] = fns[fn];
-		}
-	}
-}
-
 var mm3d = mm3d || {};
 
 mm3d.Util = (function(){
@@ -80,7 +71,7 @@ mm3d.Util = (function(){
 			   if (width === undefined) {
 				   return this._e['style']['width'];
 			   } else {
-				   this._e['style']['width'] = width;
+				   this._e['style']['width'] = width + 'px';
 				   return this;
 			   }
 		   },
@@ -96,7 +87,7 @@ mm3d.Util = (function(){
 			   if (height === undefined) {
 				   return this._e['style']['height'];
 			   } else {
-				   this._e['style']['height'] = height;
+				   this._e['style']['height'] = height + 'px';
 				   return this;
 			   }
 		   },
