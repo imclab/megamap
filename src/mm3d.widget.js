@@ -4,8 +4,6 @@
  * @requires mm3d.Util.js
  */
 
-var mm3d = mm3d || {};
-
 mm3d.NO_TRANSFORM = 0;
 mm3d.PAN_LEFT     = 1;
 mm3d.PAN_RIGHT    = 2;
@@ -50,11 +48,11 @@ mm3d.WgLoading = function (size) {
 
 	var title = mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'}).html('LOADING...');
 	this.base = mm3d.Util.div().attr({'className' : 'mm3dLoading'})
-	.w(size[0]).h(size[1])
-	.css({'top':(size[1] - parseInt(title.get().clientHeight))*.5 + 'px'});
+	.w(size[0]).h(size[1]);
 //	mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'}).html('LOADING...');
 	this._content = mm3d.Util.div().attr({'className' : 'mm3dLoadingContent'});
 	this.base.add(title).add(this._content);
+	title.css({'top':(size[1] - parseInt(title.get().clientHeight))*.5 + 'px'});
 };
 
 mm3d.WgLoading.prototype = new mm3d.Widget();
@@ -75,9 +73,13 @@ mm3d.WgToolbox = function () {
 	var opt = new mm3d.Util.span().html('option')
 		.attr({'className' : 'mm3dMenuItem'});
 	var hlp = new mm3d.Util.span().html('help')
-		.attr({'className' : 'mm3dMenuItem'});
+		.attr({'className' : 'mm3dMenuItem'})
+		.evt('click', function() {
+			window.open('https://github.com/alpha360x/megamap/wiki/Help');
+		});
 	var exp = new mm3d.Util.span().html('export')
 		.attr({'className' : 'mm3dMenuItem'});
+
 	var menuBox = new mm3d.Util.div().attr({'className' : 'mm3dMenuBox'});
 	this.exp2jpeg = new mm3d.Util.div().html('export2jpeg')
 		.attr({'className' : 'mm3dBoxItem'});

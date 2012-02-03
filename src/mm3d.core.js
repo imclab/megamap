@@ -37,6 +37,7 @@ mm3d.AbstractMap.prototype = {
 		this._title = '';
 		/* animation status */
 		this._ani = {isRun : false, cur: 0, max: 100};
+		this._maxBarHeight = 50;
 		if (config !== undefined) {
 			if (config['colorModel'] !== undefined) {
 			this._colorModel = new mm3d.ColorLG(this._dataModel,
@@ -48,6 +49,9 @@ mm3d.AbstractMap.prototype = {
 			}
 			if (config['title'] !== undefined) {
 				this._title = config['title'];
+			}
+			if (config['maxBarHeight'] !== undefined) {
+				this._maxBarHeight = config['maxBarHeight'];
 			}
 			if (config['animation'] !== undefined && config['animation']) {
 				this._ani.isRun = true;
@@ -70,8 +74,14 @@ mm3d.AbstractMap.prototype = {
 
 	},
 
-	_listener : {
+	_listeners : {
 		'load' : []
+	},
+
+	_dispatchEvent : function (type) {
+		for (var i=0; i<this._listeners[type].length; i++) {
+			this._listeners[type][i].call(this);
+		}
 	},
 
 	_mainloop : function (that) {
@@ -182,6 +192,42 @@ mm3d.AbstractMap.prototype = {
 	},
 
 	/**
+	 * Updates statics data.
+	 * @param newData the data to be updated
+	 * @param config the configuration of new data
+	 * @return false if fails to update, otherwise true
+	 */
+	updateData : function (newData, config) {
+		if (this._ani.isRun) {
+			return false;
+		} else {
+			var newMax = undefined;
+			if (config !== undefined && config['maxval'] !== undefined) {
+				newMax = config['maxval'];
+			}
+			this._dataModel.changeData(newData, newMax);
+			this._widgets[mm3d.WIDGET_SCALERULE].max(this._dataModel.max)
+				.min(this._dataModel.min);
+			this._widgets[mm3d.WIDGET_LEGEND].repaint(this._dataModel,
+												 this._colorModel);
+			/* parse config options */
+			if (config !== undefined) {
+				this._map3D._maxBarHeight = config['maxBarHeight'] === 
+					undefined ? this._map3D._maxBarHeight : 
+						config['maxBarHeight'];
+				this._map3D.repaint(!config['animation'], true);
+				this._ani.isRun = config['animation'] === undefined 
+					? false : config['animation'];
+				this._ani.max = config['animationStep'] === undefined
+					? 100 : config['animationStep'];
+			} else {
+				/* no animation */
+				this._map3D.repaint();
+			}
+		}
+	},
+
+	/**
 	 * Adds event listener to call back procedures.
 	 * @param type {String} the type of the event
 	 * @param callback {Function} the callback function when
@@ -190,8 +236,6 @@ mm3d.AbstractMap.prototype = {
 	addEventListener : function (type, callback) {
 		this._listeners[type].push(callback);
 	},
-
-	
 
 	init : function () {
 		/* intialize widgets */
@@ -228,7 +272,8 @@ mm3d.AbstractMap.prototype = {
 		/* intialize map3D */
 		this._map3D = new mm3d.Map3D(this._dataModel,
 					this._colorModel, 
-					{size : this._size, urlPrefix : this._urlPrefix });
+					{size : this._size, urlPrefix : this._urlPrefix ,
+					maxBarHeight : this._maxBarHeight});
 
 		/* updates loading bar */
 		this._map3D.addEventListener('loadStatus', (function(that){
@@ -250,6 +295,7 @@ mm3d.AbstractMap.prototype = {
 					return function(){ ythat._transform.type = mm3d.ROTATE;  }})(that), false); 
 				that._initCamCtrl();
 				that._initToolbox();
+				that._dispatchEvent('load');
 			};
 		}(this)));
 

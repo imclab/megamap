@@ -34,13 +34,18 @@ mm3d.BaseData.prototype = {
 	 * Changes the data model and calculates the max value as well.
 	 * @param newData new data model
 	 */
-	changeData : function (newData) {
+	changeData : function (newData, newMax) {
+		this.max = 0;
 		for (var item in this.model) {
 			if (newData[item]['data'] > this.max) {
 				this.max = newData[item]['data'];
 			}
 			// TODO integrity check
 			this.model[item]['data'] = newData[item]['data'];
+		}
+		if (newMax !== undefined) {
+			/* use defined max value */
+			this.max = newMax;
 		}
 	}
 

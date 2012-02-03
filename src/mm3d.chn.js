@@ -68,6 +68,9 @@ mm3d.ChinaMap = function (cont, data, config) {
 		if (config['urlPrefix'] !== undefined) {
 			this._urlPrefix = config['urlPrefix'];
 		}
+		if (config['maxval'] !== undefined) {
+			this._dataModel.max = config['maxval'];
+		}
 	}
 };
 

@@ -174,7 +174,9 @@ new THREE.MeshLambertMaterial({color : 0xff0000}));
 	},
 
 	zoom : function (step) {
-		console.log('zooming');
+		if (typeof step !== 'number') {
+			return ;
+		}
 		var camPos = this._camera.position;
 		var diffVec = {x: this._lookAt.x - camPos.x,
 			y: this._lookAt.y - camPos.y,
