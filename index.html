@@ -4,40 +4,230 @@
   <meta charset='utf-8'>
 
   <title>alpha360x/megamap @ GitHub</title>
+  <script type="text/javascript">	
+
+	var infoTxt = ['China population map', 'Shanghai housing price map'];
+	var imgWidth = 640;
+	var curInfo = 0;
+	window.addEventListener('load', function() {
+		var infoNode = document.getElementById('info');
+		var infoT = document.getElementById('infoTxt');
+		var cont = document.getElementById('container');
+		var slide = document.getElementById('slide');
+		var scont = document.getElementById('slideContainer');
+		var demoTag = document.getElementById('demo');
+		var nav = document.getElementById('nav');
+		var prev = document.getElementById('prev');
+		var next = document.getElementById('next');
+
+		cont.style['marginLeft'] = 
+			(window.innerWidth - imgWidth)*.5 + 'px';
+		nav.style['marginLeft'] = 
+			(window.innerWidth - imgWidth)*.5 - 66 + 'px';
+		demoTag.style['left'] = 
+			(window.innerWidth - imgWidth)*.5 + 'px';
+		slide.addEventListener('mouseover', function() {
+			infoNode.style['display'] = 'block';
+			infoT.innerHTML = infoTxt[curInfo];
+		}, false);
+		slide.addEventListener('mouseout', function() {
+			infoNode.style['display'] = 'none';
+		}, false);
+		prev.addEventListener('click', function() {
+			curInfo -= 1;
+			if (curInfo < 0) { curInfo = infoTxt.length - 1; }
+			scont.style['left'] = -curInfo * imgWidth + 'px';
+		}, false);
+		next.addEventListener('click', function() {
+			curInfo += 1;
+			if (curInfo >= infoTxt.length) { 
+				curInfo = 0;
+			}
+			scont.style['left'] = -curInfo * imgWidth + 'px';
+		}, false);
+
+	}, false);
+  </script>
 
   <style type="text/css">
+	* {
+		margin  : 0;
+		padding : 0;
+	}
+
     body {
-      margin-top: 1.0em;
-      background-color: #000;
+      background-color: #FFE073;
       font-family: Helvetica, Arial, FreeSans, san-serif;
       color: #ffc;
     }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #ff0; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-	h2 { font-size: 1.5em; color: #ff0; text-shadow : 0 0 10px #fff;}
-    h3 { text-align: center; color: #ff0; }
-    a { color: #ff0; }
+
+	footer {
+		background-color : #555;
+		bottom : 0;
+		width : 100%;
+		padding-bottom : 10px;
+	}
+	footer .end {
+		/* float : right; */
+		font-size : .9em;
+		color : #aaa;
+		margin-right : 30px;
+		margin-left : 80%;
+	}
+	footer a:link {color: #aae}     
+	footer a:visited {color: #aae}  
+	footer a:hover {color: #bbb}   
+	footer a:active {color: #aaa}   
+
+	.hr {
+		width : 100%;
+		height : 10px;
+	}
+
+	header {
+		padding : 20px 0 0 0;
+		background-color : #000;
+	}
+
+	header .hr {
+		background-color : #FF9A00;
+	}
+
+	footer .hr {
+		margin-bottom : 10px;
+		background-color : #444;
+	}
+
+
+	hgroup {
+		margin : 10px 10px 30px 80px
+	}
+
+	hgroup h1 {
+		color : #FFED73;
+	}
+
+	hgroup h2 {
+		color : #aaa;
+		font-size : .9em;
+		margin-left :30px;
+	}
+
+	#demo {
+		z-index : 5;
+		float : left;
+		position : absolute;
+		font-weight : bold;
+		font-size : 2em;
+		margin-left : -33px;
+		margin-top : 17px;
+		border-width : 5px;
+		border-style : solid;
+		border-radius : 20px;
+		padding : 5px 3px;
+		background-color : #FF8240;
+		transform : rotate(-25deg);
+		-moz-transform : rotate(-25deg);
+		-webkit-transform : rotate(-25deg);
+		-o-transform : rotate(-25deg);
+	}
+
+	#container {
+		padding : 30px 0px;
+	}
+
+	#info > p {
+		margin-top : 20px;
+	}
+	#info {
+		text-align : center;
+		vertical-align : middle;
+		position : absolute;
+		float : left;
+		font-size : 1.5em;
+		color : #fff;
+		font-weight : bold;
+		margin-top : 360px;
+		height : 120px;
+		width : 640px;
+		/* background-color : #FFC873; */
+		background: -moz-linear-gradient(top, rgba(0,0,0,0.2) 0%, #000 100%);
+		background: -webkit-linear-gradient(top, rgba(0,0,0,0.2) 0%,#000 100%);
+		background: -o-linear-gradient(top, rgba(0,0,0,0.2) 0%,#000 100%);
+		background: linear-gradient(top, rgba(0,0,0,0.2) 0%,#000 100%);
+		z-index: 4;
+		display : none;
+	}
+
+	.slide {
+		position : relative;
+		overflow : hidden;
+		width : 640px;
+		height : 480px;
+	}
+	.slideContainer {
+		position : absolute;
+		width : 1280px;
+		left : 0px;
+		transition-property : left;
+		transition-duration : .5s;
+		-webkit-transition-property : left; 
+		-webkit-transition-duration : .5s;
+		-moz-transition-property : left;
+		-moz-transition-duration : .5s;
+		-o-transition-property : left;
+		-o-transition-duration : .5s;
+	}
+
+	.slideContainer  img {
+		float : left;
+	}
+
+	.btns > span {
+		cursor : pointer;
+		text-align : center;
+		padding-left, padding-right : 30%;
+	}
+
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
+    .download { 
+		margin-top : 20px;
+		margin-right : 80px;
+		float: right; 
+	}
+	nav {
+		float : left;
+		z-index : 8;
+		margin-top : 250px;
+	}
+	nav > span {
+		display : block;
+		cursor : pointer;
+		float : none;
+		position : absolute;
+		background-image : url('img/nav-slide.png');
+		overflow : hidden;
+		width : 66px;
+		height : 66px;
+	}
+	#prev {
+		background-position : 0 200px;
+	}
+	#next {
+		margin-left : 706px;
+	}
 	pre { background: #000; color: #fff; padding: 15px; box-shadow : 0 0 10px #ff0; border-radius: 10px;}
 	.intro { color : #fff; font-size: .5em; }
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
-	img:hover {
-		box-shadow : 0 0 10px #fe0;
-		}
+/*	img:hover { box-shadow : 0 0 10px #fe0; } */
   </style>
 </head>
 
 <body>
+
   <a href="https://github.com/alpha360x/megamap"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <div id="container">
 
     <div class="download">
       <a href="https://github.com/alpha360x/megamap/zipball/master">
@@ -46,42 +236,52 @@
         <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
     </div>
 
-	<h1><a href="https://github.com/alpha360x/megamap">megamap</a></h1>
 
-    <div class="description">
-      A javascript library
-    </div>
+  <header>
+ 	<hgroup>
+	<h1>Megamap</h1>
+	<h2> - a javascript library</h2>
+	<h2>Visualize the statistical map in 3d.</h3>
+	</hgroup> 	
+	<div class="hr"></div>
+  </header>
+  <span id="demo">DEMOS</span>
+  <nav id='nav'>
+  	<span id="prev"></span>
+  	<span id="next"></span>
+  </nav>
+  <div id='container'>
+	  <div class="slide" id='slide'>
+		  <div id='slideContainer' class="slideContainer">
+			  <a href='examples/China_population.html'>
+		  <img src="img/sc_china.jpg" alt="China population map" width='640' height='480' >
+	  </a>
+	  	<a href='examples/Shanghai_2ndHandHousing.html'>
+		  <img src="img/sc_shanghai.jpg" alt="China population map" width='640' height='480' >
+	  </a>
 
-    
-      <p>
-		  Visualize the statistical map in 3d.
-	  </p>
-    
+	  	</div>
+		<div id="info">
+			<p id='infoTxt'></p>
+		</div>
+	  </div>
 
-	  <h2>Current Examples : <h2>
-			  <p>
-				  <a href='examples/CHN_population.html'>
-				  <img width='640' height='360' src="https://github.com/alpha360x/megamap/raw/master/screenshots/CHN_population.png" alt="China's population map" >
+	  <!--
+					<a href='examples/China_population.html'>
+				  <img width='640' height='360' 
+				  src="https://github.com/alpha360x/
+				  megamap/raw/master/screenshots/CHN_population.png" 
+				  alt="China's population map" >
 				  </a>
+				  <a href='examples/Shanghai_2ndHandHousing.html'></a>
 					<div class="intro">China's population map</div>
-			  </p>
-    
-      <h2>Dependencies</h2>
-      <p><a href="https://github.com/mrdoob/three.js">three.js</a></p>
-    
-    
-      <h2>License</h2>
-      <p>MIT</p>
-    
-    
-      <h2>Authors</h2>
-      <p>Ye Jiabin (alpha360x@gmail.com)<br/>      </p>
-    
-    
-      <h2>Contact</h2>
-      <p>Ye Jiabin (alpha360x@gmail.com)<br/>      </p>
-    
+	-->
+	</div>
+			  <!--
+	<h1><a href="https://github.com/alpha360x/megamap">megamap</a></h1>
+	-->
 
+<!--
     <h2>Download</h2>
     <p>
       You can download this project in either
@@ -94,10 +294,27 @@
     </p>
 
     <div class="footer">
-      get the source code on GitHub : <a href="https://github.com/alpha360x/megamap">alpha360x/megamap</a>
+      get the source code on GitHub : 
+	  <a href="https://github.com/alpha360x/megamap">alpha360x/megamap</a>
     </div>
+-->
 
+  <footer>
+  <div class="hr"></div>
+  <div class="end">
+	  Source on Github : <a href="https://github.com/alpha360x/megamap">alpha360x/megamap</a>
+	  <br>
+	  Dependencies : 
+      <a href="https://github.com/mrdoob/three.js">three.js</a>
+	  <br>
+	  License : MIT
+	  <br>
+	  Contact : 
+	  <a href='mailto:alpha360x@gmail.com'>alpha360x@gmail.com</a>
+	  <br>
+	  Author : Ye Jiabin
   </div>
+  </footer>
 
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
