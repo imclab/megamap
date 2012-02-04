@@ -1,5 +1,5 @@
 /**
- * The core class for megamap library.
+ * The China map script for megamap library.
  * @author Ye Jiabin <alpha360x@gmail.com>
  * @requires mm3d.core.js
  */
@@ -67,6 +67,9 @@ mm3d.ChinaMap = function (cont, data, config) {
 	if (config !== undefined) {
 		if (config['urlPrefix'] !== undefined) {
 			this._urlPrefix = config['urlPrefix'];
+		}
+		if (config['maxval'] !== undefined) {
+			this._dataModel.max = config['maxval'];
 		}
 	}
 };

@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/mm3d.css" type='text/css'>
+	<style type="text/css">
+	body { background: #000; }
+	#vp {
+		margin-left : 10%;
+		position : absolute;
+	}
+	footer {
+		min-height : 15%;
+		background-color : #555;
+		position : absolute;
+		bottom : 0;
+		width : 100%;
+		padding-bottom : 20px;
+	}
+	.hr {
+		width : 100%;
+		height : 10px;
+		background-color : #444;
+	}
+	#pointer {
+		position : absolute;
+		width : 0;
+		height : 0;
+		left : 110px;
+		border-width : 10px;
+		border-color : #444 transparent transparent transparent;
+		border-style : solid;
+		transition-property: left;
+		transition-duration: .5s;
+		-webkit-transition-property: left;
+		-webkit-transition-duration: .5s;
+		-o-transition-property: left;
+		-o-transition-duration: .5s;
+	}
+	.intro {
+		text-align : center;
+		font-weight : bold;
+		font-size : 1.2em;
+		color : #ccc;
+		position : absolute;
+		bottom : 20px;
+		left : 90px;
+	}
+	footer  ul {
+		display : block;
+		margin-left : 10px;
+		color : #eee;
+	}
+	footer ul > li {
+		display : block;
+		cursor : pointer;
+		float : left;
+		margin : 2px 10px 2px 40px;
+	}
+	footer ul > li  > span {
+		padding : 10px 5px;
+		border-style : solid;
+		border-radius : 33px;
+		border-width : 4px;
+		border-color : transparent;
+	}
+	footer ul > li:hover  > span {
+		border-color : #fa0;
+	}
+	footer .end {
+		float : right;
+		font-size : .9em;
+		color : #aaa;
+		margin-right : 30px;
+	}
+	a:link {color: #aae}     
+	a:visited {color: #aae}  
+	a:hover {color: #bbb}   
+	a:active {color: #aaa}   
+	</style>
+	<script type="text/javascript" src='js/Three.js'>
+	</script>
+	<!--
+	<script type="text/javascript" src='../src/mm3d.util.js'></script>
+	<script type="text/javascript" src='../src/mm3d.widget.js'></script>
+	<script type="text/javascript" src='../src/mm3d.data.js'></script>
+	<script type="text/javascript" src='../src/mm3d.color.js'></script>
+	<script type="text/javascript" src='../src/mm3d.map.js'></script>
+	<script type="text/javascript" src='../src/mm3d.core.js'></script>
+	<script type="text/javascript" src='../src/mm3d.chn.js'></script>
+	-->
+
+	<script type="text/javascript" src='js/mm3d.min.js'></script>
+	<script type="text/javascript" src='js/mm3d.shanghai.js'></script>
+	<title>A test page</title>
+</head>
+<body>
+<div id="vp"></div>
+
+<footer>
+<div class="hr"></div>
+<!--div id="pointer"></div>
+<div>
+<ul>
+	<li><span id='bt1990'>1990<span></li>
+	<li><span id='bt2000'>2000<span></li>
+	<li><span id='bt2010'>2010<span></li>
+</ul>
+</div-->
+<div class="intro">Average price of second-hand housing in Shanghai
+	<br> RMB / M<span style='font-size:.5em;vertical-align:top'>2 </span>
+</div>
+<br>
+<div class="end">
+	All statistics in this page are from <a href="http://sh.fangjia.com/ershoufang">fangjian.com</a> (2012 Feb. 4th).
+	<br>
+	<span style='font-size:.6em'>* the statictics are not from official, and it's a just demo of megamap.</span>
+	<br>
+	Author : <a href="mailto:alpha360x@gmail.com">Ye Jiabin</a>
+</div>
+</footer>
+<script type="text/javascript">
+
+var mapData = {
+	'Huangpu' : { data : 34100 },
+	'Luwan' : { data : 40000},
+	'Xuhui' : { data : 29000},
+	'Changning' : {data : 33300},
+	'Jingan' : {data : 39600},
+
+	'Putuo' : {data : 22800},
+	'Zhabei' : {data : 19800},
+	'Hongkou' : {data : 27300},
+	'Yangpu' : {data : 23100},
+	'Baoshan' : {data : 16100},
+
+	'Minhang' : {data : 19100},
+	'Pudong' : {data : 22100},
+	'Jiading' : {data : 13000},
+	'Nanhui' : {data : 13800},
+	'Fengxian' : {data : 11600},
+
+	'Songjiang' : {data : 13800},
+	'Jinshan' : {data : 8400},
+	'Qingpu' : {data : 18400},
+	'Chongming' : {data : 4800}
+};
+
+var size = [window.innerWidth*.8, window.innerHeight*.8];
+
+var mp = new mm3d.ShanghaiMap(vp, mapData, 
+		{'size': size, 
+		'urlPrefix':'js/map/Shanghai/map',
+		'colorModel' : {'max':new THREE.Color(0xff0000),
+		'min':new THREE.Color(0xffffff)},
+		'animation':true, 'animationStep':80});
+mp.init();
+
+</script>
+	
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-28581436-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>
