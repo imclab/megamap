@@ -43,5 +43,6 @@ map.init();
 
 Current examples :
 ----------------
-![China's population map](https://github.com/alpha360x/megamap/raw/master/screenshots/CHN_population.png)
+![China's population map](http://alpha360x.github.com/megamap/img/sc_china.jpg)
+![Shanghai's housing price map](http://alpha360x.github.com/megamap/img/sc_shanghai.jpg)
 
