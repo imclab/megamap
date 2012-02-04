@@ -1,5 +1,5 @@
 /**
- * The core class for megamap library.
+ * The China map script for megamap library.
  * @author Ye Jiabin <alpha360x@gmail.com>
  * @requires mm3d.core.js
  */

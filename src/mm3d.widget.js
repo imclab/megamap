@@ -70,8 +70,8 @@ mm3d.WgLoading.prototype.content = function(txt) {
 mm3d.WgLoading.prototype.constructor = mm3d.WgLoading;
 
 mm3d.WgToolbox = function () {
-	var opt = new mm3d.Util.span().html('option')
-		.attr({'className' : 'mm3dMenuItem'});
+	//var opt = new mm3d.Util.span().html('option')
+//		.attr({'className' : 'mm3dMenuItem'});
 	var hlp = new mm3d.Util.span().html('help')
 		.attr({'className' : 'mm3dMenuItem'})
 		.evt('click', function() {
@@ -88,7 +88,7 @@ mm3d.WgToolbox = function () {
 	this.base = new mm3d.Util.div()
 		.attr({'className' : 'mm3dToolbox'})
 		.add(exp.add(menuBox.add(this.exp2jpeg).add(this.exp2png)))
-		.add(opt).add(hlp)
+		.add(hlp);
 };
 
 mm3d.WgToolbox.prototype = new mm3d.Widget();

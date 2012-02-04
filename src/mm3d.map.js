@@ -77,7 +77,7 @@ mm3d.Map3D.prototype = {
 		var max = this._dataModel.max, min = this._dataModel.min;
 		for (var item in this._dataModel.model) {
 			var ele = this._dataModel.model[item];
-			var newScale = 1 + this._maxBarHeight*ratio*
+			var newScale = 1 + this._maxBarHeight*
 				ele['data']/(max - min);
 			var diff = newScale - ele['last'];
 			ele['mesh'].scale.y = ele['last'] + diff*ratio;
@@ -192,6 +192,9 @@ new THREE.MeshLambertMaterial({color : 0xff0000}));
 	},
 
 	rotate : function (delta) {
+		if (typeof delta.x !== 'number' || typeof delta.y !== 'number') {
+			return;
+		}
 		for (var item in this._dataModel['model']) {
 			this._dataModel.model[item]['mesh'].rotation.x += delta.x;
 			this._dataModel.model[item]['mesh'].rotation.z += delta.y;

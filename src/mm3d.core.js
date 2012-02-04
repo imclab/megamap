@@ -219,7 +219,7 @@ mm3d.AbstractMap.prototype = {
 				this._ani.isRun = config['animation'] === undefined 
 					? false : config['animation'];
 				this._ani.max = config['animationStep'] === undefined
-					? 100 : config['animationStep'];
+					? this._ani.max : config['animationStep'];
 			} else {
 				/* no animation */
 				this._map3D.repaint();
