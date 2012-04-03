@@ -47,12 +47,21 @@ mm3d.WgLoading = function (size) {
 	mm3d.Widget.call(this);
 
 	var title = mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'}).html('LOADING...');
-	this.base = mm3d.Util.div().attr({'className' : 'mm3dLoading'})
-	.w(size[0]).h(size[1]);
+	this.base =  mm3d.Util.div().attr({'className' : 'mm3dLoading'})
+	.w(parseInt(window.innerWidth)).h(parseInt(window.innerHeight));
 //	mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'}).html('LOADING...');
 	this._content = mm3d.Util.div().attr({'className' : 'mm3dLoadingContent'});
-	this.base.add(title).add(this._content);
+	
 	title.css({'top':(size[1] - parseInt(title.get().clientHeight))*.5 + 'px'});
+    
+    this.barWidth = parseInt(window.innerWidth*.8);
+    this.bar = new mm3d.Util.div().attr({'className' : 'mm3dHr'}).w(0);
+    
+    
+    this.base.add(title).add(this.bar).add(
+    mm3d.Util.div().attr({'className' : 'mm3dLoadingTitle'})
+    .html('MEGAMAP').css({'color':'#ff5b56', 'fontSize':'3em', 'textShadow' : 'none'})
+    );
 };
 
 mm3d.WgLoading.prototype = new mm3d.Widget();
@@ -66,6 +75,10 @@ mm3d.WgLoading.prototype.content = function(txt) {
 		this._content.html(txt);
 		return this;
 	};
+mm3d.WgLoading.prototype.status = function(percent) {
+		this.bar.w(this.barWidth*percent);
+		return this;
+};
 
 mm3d.WgLoading.prototype.constructor = mm3d.WgLoading;
 

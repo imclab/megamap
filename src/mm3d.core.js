@@ -321,8 +321,8 @@ mm3d.AbstractMap.prototype = {
 		/* updates loading bar */
 		this._map3D.addEventListener('loadStatus', (function(that){
 			return function(e) {
-			that._loading.content
-			(parseInt(e.count/that._dataModel.length*100) + '% loaded');
+			that._loading.status
+			(e.count/that._dataModel.length);
 			}
 		})(this));
 		this._map3D.addEventListener('load', (function(that){
