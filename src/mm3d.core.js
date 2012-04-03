@@ -236,8 +236,30 @@ mm3d.AbstractMap.prototype = {
 	addEventListener : function (type, callback) {
 		this._listeners[type].push(callback);
 	},
+    
+    _mkHoverImage : function (_uri) {
+        return new mm3d.Util.div().attr({'className' : 'mm3dHover'})
+            .w(window.innerWidth*.6).h(window.innerHeight*.8)
+            .css({'marginLeft' : parseInt(window.innerWidth*.2) + 'px'})
+            .html("<img src='" + _uri + 
+            "' width='" + parseInt(window.innerWidth*.6) + 
+            "' height='" + parseInt(window.innerHeight*.8) +  "' ></img>");
+    },
+    
+    _webglFallback : function () {
+        document.body.appendChild(this._mkHoverImage(
+        'https://github.com/alpha360x/megamap/raw/master/res/fb_webGL.png'
+        ).get());
+    },
 
 	init : function () {
+        /* check webgl capability */
+        if (!window.WebGLRenderingContext) {
+            /* browser not support */
+            this._webglFallback();
+            return ;
+        } 
+    
 		/* intialize widgets */
 		for (var i=0; i<this._widgets.length; i++) {
 			this._vp.appendChild(this._widgets[i].getDOM());
@@ -255,13 +277,34 @@ mm3d.AbstractMap.prototype = {
 		/* add listeners */
 		window.addEventListener('keydown', (function(that) {
 		return	function(e) {
-			if (e.which === 65 /* a */) {
-				that._transform.type = mm3d.ZOOM_IN ;
-				that._transform.delta = .03;
-			} else if (e.which === 90 /* z */) {
-				that._transform.type = mm3d.ZOOM_OUT ;
-				that._transform.delta = -.03;
-			}
+            switch (e.which) {
+                case 81: /* q */
+                    that._transform.type = mm3d.ZOOM_IN ;
+                    that._transform.delta = .03;
+                break;
+                case 69: /* e */
+                    that._transform.type = mm3d.ZOOM_OUT ;
+                    that._transform.delta = -.03;
+                break;
+                case 87: /* w */
+                    that._transform.type = mm3d.PAN_TOP ;
+                    that._transform.delta = .1;
+                break;
+                case 65: /* a */
+                    that._transform.type = mm3d.PAN_LEFT ;
+                    that._transform.delta = .1;
+                break;
+                case 68: /* d */
+                    that._transform.type = mm3d.PAN_RIGHT ;
+                    that._transform.delta = .1;
+                break;
+                case 83: /* s */
+                    that._transform.type = mm3d.PAN_DOWN ;
+                    that._transform.delta = .1;
+                break;
+                default:
+                break;
+            }
 		};
 		})(this), false);
 

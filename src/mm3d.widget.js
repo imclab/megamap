@@ -73,9 +73,30 @@ mm3d.WgToolbox = function () {
 	//var opt = new mm3d.Util.span().html('option')
 //		.attr({'className' : 'mm3dMenuItem'});
 	var hlp = new mm3d.Util.span().html('help')
-		.attr({'className' : 'mm3dMenuItem'})
-		.evt('click', function() {
-			window.open('https://github.com/alpha360x/megamap/wiki/Help');
+		.attr({'className' : 'mm3dMenuItem'});
+    hlp.evt('click', function() {
+			var helpPic = new mm3d.Util.div()
+            .attr({'className' : 'mm3dHover'})
+            .w(window.innerWidth).h(window.innerHeight*.8)
+            .css({'paddingLeft' : parseInt(window.innerWidth*.2) + 'px'})
+            .html("<img src='https://github.com/alpha360x/megamap/raw/master/res/help.png' width='" + parseInt(window.innerWidth*.6) + 
+            "' height='" + parseInt(window.innerHeight*.8) +  "' ></img>");
+            
+            var closeButton = new mm3d.Util.div().attr(
+            {'className' : 'mm3dLoadingTitle'}).html('CLOSE')
+            .css({'position' : 'fixed', 'zIndex' : '401',
+             'cursor' : 'pointer', 
+             'left' : parseInt(window.innerWidth*.6) + 'px',
+             'top' : parseInt(window.innerHeight*.6) + 'px'});
+            closeButton.evt('click', (function(_h, _c) {
+                return function() {
+                    document.body.removeChild(_h);
+                    document.body.removeChild(_c);
+                }
+            })(helpPic.get(), closeButton.get()));
+            
+            document.body.appendChild(helpPic.get());
+            document.body.appendChild(closeButton.get());
 		});
 	var exp = new mm3d.Util.span().html('export')
 		.attr({'className' : 'mm3dMenuItem'});
@@ -208,7 +229,7 @@ mm3d.WgLegend.prototype.constructor = mm3d.WgLegend;
  * @param map3D a reference of map3D instance.
  */
 mm3d.WgCamCtrl = function (map3D) {
-	this.base = mm3d.Util.div()
+	this.base = new mm3d.Util.div()
 		.attr({'className':'mm3dCamContainer'});
 	var r = 18, sqrt2 = Math.sqrt(2);
 	var cfg = [
@@ -219,13 +240,34 @@ mm3d.WgCamCtrl = function (map3D) {
 	];
 	/* pan buttons */
 	this.bts = {};
-
+    var contentText = ['up', 'left', 'right', 'down'];
+    var content = new  mm3d.Util.div()
+    .attr({'className':'mm3dCamButtonContent'});
+    
 	for (var i=0; i<cfg.length; i++) {
 		this.bts[cfg[i]['sign']] = mm3d.Util.div().attr({'className':'mm3dCamButton'})
 			.css({'left': r*cfg[i]['pos'][0] + 'px',
-				 'top': r*cfg[i]['pos'][1] + 'px'});
+				 'top': r*cfg[i]['pos'][1] + 'px'})
+            .evt('mouseover', (function(_text, _ct){
+                return function() {
+                    _ct.html('camera : move ' + _text);
+                    return false;
+                }
+            })(contentText[i], content))
+            .evt('mouseout', (function(_text, _ct){
+                return function() {
+                    _ct.html('');
+                    return false;
+                }
+            })(contentText[i], content));
+                 
+                 
 		this.base.add(this.bts[cfg[i]['sign']]);
 	}
+    
+    this.base.add(content);
+    
+    
 }
 
 mm3d.WgCamCtrl.prototype = new mm3d.Widget();
