@@ -42,19 +42,22 @@ body {
 
 .mm3dLoading {
 	display : block;
-	position : absolute;
+	position : fixed;
 	left :  0;
-	right : 0;
+	top : 0;
 	background-color : #000;
-	z-index : 198;
+    padding-top : 300px;
+	z-index : 205;
 }
 
 .mm3dLoading  > div {
 	width    : 80%;
 	margin-left : 10%;
 	margin-right: 10%;
+      padding-top : 0;
 	text-align : center;
 	vertical-align : middle;
+    
 }
 
 .mm3dLoadingTitle {
@@ -67,6 +70,7 @@ body {
 .mm3dLoadingContent {
 	font-size : .8em;
 	color : #fff;
+    z-index : 206;
 }
 
 #mm3dMaxTag {
@@ -114,6 +118,23 @@ body {
 	background-color : rgba(188, 188, 188, 1);
 }
 
+.mm3dCamButtonContent { 
+    color : #ffc;
+    position : absolute;
+    left : 0;
+    top : 100px;
+    width : 300px;
+    transform : none !important;
+	-moz-transform : none !important;
+	-webkit-transform : none !important;
+	-o-transform : none !important;
+
+}
+
+.mm3dCamButton:hover > .mm3dCamButtonContent {
+	display : block;
+}
+
 .mm3dToolbar {
 }
 
@@ -130,6 +151,11 @@ body {
 	display  : block;
 	position : relative;
 	height : 20px;
+    cursor : pointer;
+}
+
+.mm3dLegendItem:hover {
+    background-color : rgba(100, 100, 100, .2);
 }
 
 .mm3dLegendItem > span {
@@ -210,4 +236,16 @@ body {
 
 .mm3dMenuBox > .mm3dBoxItem:hover {
 	background-color : rgba(255, 255, 0, .2);
+}
+
+.mm3dHover {
+    z-index : 400;
+    position : fixed;
+    background-color : rgba(0, 0, 0, .5);
+}
+
+.mm3dHr {
+    height : 5px;
+    margin : 10px 0 ;
+    background-color : #ffcf04;
 }
